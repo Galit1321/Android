@@ -28,7 +28,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);//go to layout file and bring me activitymain file
+      /*textSwitcher = (TextSwitcher) findViewById(R.id.text);
 
+        textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                TextView switcherTextView = new TextView(getApplicationContext());
+                switcherTextView.setTextSize(24);
+                switcherTextView.setTextColor(Color.RED);
+                switcherTextView.setText("Click The Below Button");
+                switcherTextView.setShadowLayer(6, 6, 6, Color.BLACK);
+                return switcherTextView;
+            }
+        });
+
+        Animation animationOut = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
+        Animation animationIn = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
+
+        textSwitcher.setOutAnimation(animationOut);
+        textSwitcher.setInAnimation(animationIn);*/
     }
 
 

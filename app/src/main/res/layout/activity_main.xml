@@ -13,11 +13,33 @@ android:background="@drawable/splah_bg">
         android:id="@+id/logo"
 android:src="@drawable/logo"
         />
-    <TextSwitcher
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/logo"
-        android:padding="100dp"
-        android:id="@+id/text"
-        ></TextSwitcher>
+    <ViewFlipper
+        android:id="@+id/viewFlipper1"
+        android:autoStart="true"
+        android:flipInterval="3000"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_below="@id/logo">
+        <TextView
+            android:id="@+id/Shalom_textview"
+            android:text="Shalom"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent" />
+        <TextView
+            android:id="@+id/Have_textview"
+            android:text="Have a great day"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent" />
+        <TextView
+            android:id="@+id/Enjoy_textview"
+            android:text="Enjoy from the App"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent" />
+        <TextView
+            android:id="@+id/Wish_textview"
+            android:text="Wish you well!"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent" />
+    </ViewFlipper>
+
 </RelativeLayout>

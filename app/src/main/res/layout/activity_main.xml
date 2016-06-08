@@ -13,11 +13,5 @@ android:background="@drawable/splah_bg">
         android:id="@+id/logo"
 android:src="@drawable/logo"
         />
-    <TextSwitcher
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/logo"
-        android:padding="100dp"
-        android:id="@+id/text"
-        ></TextSwitcher>
+
 </RelativeLayout>

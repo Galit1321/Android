@@ -156,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         @Override
         protected User doInBackground(Void... params) {///run in diff thread
-            Log.i("doInBackground", Thread.currentThread().getName());
+            Log.i("doInBackground", Thread.currentThread().getName());//print the thread infomation
             try {
                 URL url = new URL("http://www.google.com/");
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

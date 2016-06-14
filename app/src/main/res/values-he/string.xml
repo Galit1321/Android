@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">אפליקציה</string>
+    <string name="title_activity_login">הרשמה</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">איימיל</string>
+    <string name="prompt_password">סיסמא</string>
+    <string name="action_sign_in">היכנס או תירשם</string>
+    <string name="action_sign_in_short">הרשמה</string>
+    <string name="error_invalid_email">כתובת המייל לא תקינה</string>
+    <string name="error_invalid_password">סיסמא קצרה מידי</string>
+    <string name="error_incorrect_password">סיסמא שגויה</string>
+    <string name="error_field_required">שדה נדרש</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+</resources>

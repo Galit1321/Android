@@ -1,5 +1,6 @@
 package com.example.revit.atry;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);//go to layout file and bring me activitymain file
+        Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
+        startActivity(i);
       /*textSwitcher = (TextSwitcher) findViewById(R.id.text);
 
         textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {

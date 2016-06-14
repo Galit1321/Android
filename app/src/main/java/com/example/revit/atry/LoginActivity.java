@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -63,7 +64,15 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mUserView= (EditText) findViewById(R.id.username);
-
+        //if we press the register button we redirect to activity to register to data base
+        final Button RegisterBnt=(Button) findViewById(R.id.registerBnt);
+        RegisterBnt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(LoginActivity.this,RegisterActivity.class);//move to the explition window
+                startActivity(i);
+            }
+        });
         Button SignInButton = (Button) findViewById(R.id.sign_in_button);
         SignInButton.setOnClickListener(new OnClickListener() {
             @Override

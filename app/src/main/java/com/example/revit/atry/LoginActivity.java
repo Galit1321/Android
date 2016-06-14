@@ -52,7 +52,7 @@ import java.util.List;
 import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText mEmailView;
+    private EditText mUserView;
     private View mProgressView;
     private View mLoginFormView;
     private UserLoginTask mAuthTask;
@@ -62,10 +62,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mEmailView = (EditText) findViewById(R.id.email);
+        mUserView= (EditText) findViewById(R.id.username);
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button SignInButton = (Button) findViewById(R.id.sign_in_button);
+        SignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -77,43 +77,43 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-        mEmailView.setError(null);
-        String email = mEmailView.getText().toString();
+        mUserView.setError(null);
+        String user = mUserView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+        if (TextUtils.isEmpty(user)) {
+            mUserView.setError(getString(R.string.error_field_required));
+            focusView = mUserView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+        } /*else if (!isEmailValid(user)) {
+            mUserView.setError(getString(R.string.error_invalid_username));
+            focusView =mUserView;
             cancel = true;
-        }
+        }*/
 
         if (cancel) {
-            focusView.requestFocus();
+            focusView.requestFocus();//THE FIELD OF USER NAME WILL GET FOCUSE
         } else {
             View view = this.getCurrentFocus();
-            if (view != null) {
+            if (view != null) {//hide the keyboard
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
 
             showProgress(true);
-            mAuthTask = new UserLoginTask(email);
+            mAuthTask = new UserLoginTask(user);//activate asyc commend of
             mAuthTask.execute();
         }
     }
 
     private void showProgress(boolean b) {
-        if (b) {
+        if (b) {//hide the form and make progress bar visiable
             mLoginFormView.setVisibility(View.GONE);
             mProgressView.setVisibility(View.VISIBLE);
-        }else {
+        }else {//reverese the rolls of first condition
             mLoginFormView.setVisibility(View.VISIBLE);
             mProgressView.setVisibility(View.GONE);
         }
@@ -146,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
             mEmail = email;
         }
         @Override
-        protected User doInBackground(Void... params) {
+        protected User doInBackground(Void... params) {///run in diff thread
             Log.i("doInBackground", Thread.currentThread().getName());
             try {
                 URL url = new URL("http://www.google.com/");

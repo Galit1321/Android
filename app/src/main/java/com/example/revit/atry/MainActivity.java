@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -17,39 +19,25 @@ import android.widget.ViewSwitcher;
 
 public class MainActivity extends AppCompatActivity {
 
-    String textSwitcherText[] = {"TextSwitcher Example", "Next Text in TextSwitcher", "Android TextSwitcher", "TextSwitcher Tutorial", "TextSwitcher in Android"};
 
-    TextSwitcher textSwitcher;
-
-    int switcherText = textSwitcherText.length;
-    int counter = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);//go to layout file and bring me activitymain file
-        Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
-        startActivity(i);
-      /*textSwitcher = (TextSwitcher) findViewById(R.id.text);
-
-        textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+        Handler h = new Handler(){
             @Override
-            public View makeView() {
-                TextView switcherTextView = new TextView(getApplicationContext());
-                switcherTextView.setTextSize(24);
-                switcherTextView.setTextColor(Color.RED);
-                switcherTextView.setText("Click The Below Button");
-                switcherTextView.setShadowLayer(6, 6, 6, Color.BLACK);
-                return switcherTextView;
+            public void handleMessage(Message msg) {
+
+                Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
+                startActivity(i);
             }
-        });
+        };
 
-        Animation animationOut = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
-        Animation animationIn = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
+        h.sendEmptyMessageDelayed(0, 5000); // wait  seconds and move to next page
 
-        textSwitcher.setOutAnimation(animationOut);
-        textSwitcher.setInAnimation(animationIn);*/
+
     }
 
 

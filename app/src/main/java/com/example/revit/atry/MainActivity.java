@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
         Handler h = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
+               // Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
+                Intent i=new Intent(MainActivity.this,ExpActivity.class);//move to the explition window
                 startActivity(i);
             }
         };

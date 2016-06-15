@@ -140,7 +140,7 @@ public class ExpActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 5;
         }
 
         @Override
@@ -152,6 +152,10 @@ public class ExpActivity extends AppCompatActivity {
                     return "SECTION 2";
                 case 2:
                     return "SECTION 3";
+                case 3:
+                    return "SECTION 4";
+                case 4:
+                    return "SECTION 5";
             }
             return null;
         }

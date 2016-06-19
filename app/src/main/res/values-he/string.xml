@@ -11,6 +11,8 @@
     <!-- Strings related to login -->
     <string name="prompt_username">שם משתמש</string>
     <string name="prompt_password">סיסמא</string>
+    <string name="prompt_name">שם</string>
+    <string name="prompt_email">איימל</string>
     <string name="action_sign_in">התחבר</string>
     <string name="register" >הירשם</string>
     <string name="action_sign_in_short">הרשמה</string>

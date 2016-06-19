@@ -178,6 +178,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
+
         @Override
         protected void onCancelled() {
             mAuthTask = null;

@@ -3,7 +3,7 @@ package com.example.revit.atry;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class User{
+public class User{
     private String name;
     private String username;
     private String password;

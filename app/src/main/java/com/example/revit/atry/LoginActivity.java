@@ -97,11 +97,7 @@ public class LoginActivity extends AppCompatActivity {
             mUserView.setError(getString(R.string.error_field_required));
             focusView = mUserView;
             cancel = true;
-        } /*else if (!isEmailValid(user)) {
-            mUserView.setError(getString(R.string.error_invalid_username));
-            focusView =mUserView;
-            cancel = true;
-        }*/
+        }
 
         if (cancel) {
             focusView.requestFocus();//THE FIELD OF USER NAME WILL GET FOCUSE
@@ -133,32 +129,18 @@ public class LoginActivity extends AppCompatActivity {
         return email.contains("@");
     }
 
-    class User{
-        private String name;
 
-        public User(JSONObject object){
-            try {
-                this.name = object.getString("Name");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
 
     public class UserLoginTask extends AsyncTask<Void, Void, User> {
-        private final String mEmail;
-        UserLoginTask(String email) {
-            mEmail = email;
+        private final String user_name;
+        UserLoginTask(String un) {
+            user_name = un;
         }
         @Override
         protected User doInBackground(Void... params) {///run in diff thread
             Log.i("doInBackground", Thread.currentThread().getName());//print the thread infomation
             try {
-                URL url = new URL("http://www.google.com/");
+                URL url = new URL("http://10.0.2.2:8080//MyFormServlet?username="+this.user_name+"&password=");
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 try {
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());

@@ -122,8 +122,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
-
     public class UserLoginTask extends AsyncTask<Void, Void, User> {
         private final String user_name;
         private final  String password;
@@ -148,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                     while ((inputStr = streamReader.readLine()) != null)
                         responseStrBuilder.append(inputStr);
                     JSONObject json = new JSONObject(responseStrBuilder.toString());
-                    if ((!((boolean)json.get("exist"))|| (!((boolean)json.get("password"))))){
+                    if ((!((boolean)json.get("exist"))|| (!((boolean)json.get("passwordRight"))))){
                       //user name dont exist or this isn't the correct password
                         return null;
                     }
@@ -158,6 +156,7 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
                     urlConnection.disconnect();
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

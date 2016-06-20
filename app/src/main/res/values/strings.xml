@@ -34,4 +34,9 @@
     <string name="reset">Reset</string>
     <string name="error_invalid_email">invalid email address</string>
     <string name="error_no_icon">you must choose icon</string>
+    <string name="radio5">5</string>
+    <string name="radio4">4</string>
+    <string name="radio3">3</string>
+    <string name="radio2">2</string>
+    <string name="radio1">1</string>
 </resources>

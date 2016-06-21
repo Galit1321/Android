@@ -39,7 +39,8 @@
             android:name=".ExpActivity"
             android:label="@string/title_activity_exp"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity android:name=".ChatActivity"
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
 </manifest>

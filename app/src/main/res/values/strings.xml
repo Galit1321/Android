@@ -42,4 +42,5 @@
     <string name="section5_format">enjoy</string>
     <string name="section4_format">just write</string>
     <string name="skip">Skip</string>
+    <string name="send">Send</string>
 </resources>

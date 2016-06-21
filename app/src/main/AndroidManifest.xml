@@ -40,6 +40,12 @@
             android:label="@string/title_activity_exp"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".Masseges"></activity>
     </application>
 
 </manifest>

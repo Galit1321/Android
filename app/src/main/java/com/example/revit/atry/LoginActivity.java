@@ -2,6 +2,7 @@ package com.example.revit.atry;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -169,11 +170,14 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("doInBackground", Thread.currentThread().getName());
             showProgress(false);
 
-            if (user != null )
+            if (user != null ) {
+                SharedPreferences  sharedpreferences = getSharedPreferences("MyPrefs" , Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString(user.getUsername(),user.getPassword());
                 finish();
-            else
+            } else
             {
-                Toast.makeText(LoginActivity.this, "Failed,Incorrect user_name/password", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, R.string.incorrect_input, Toast.LENGTH_LONG).show();
             }
         }
 

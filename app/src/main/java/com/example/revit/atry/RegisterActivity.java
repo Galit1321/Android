@@ -65,6 +65,12 @@ public class RegisterActivity extends AppCompatActivity {
         finish();
         startActivity(intent);
     }
+
+    /***
+     *  hide or show the progress bar according to arg b
+     * @param b that indicate if
+     *          there is need to show progress bar
+     */
     private void showProgress(boolean b) {
 
         if (b) {//hide the form and make progress bar visiable
@@ -136,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (cancel) {
-            focusView.requestFocus();
+            focusView.requestFocus();//get focus on empty field
         } else {
             View view = this.getCurrentFocus();
             if (view != null) {
@@ -157,7 +163,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-
+    /***
+     * inner class that
+     */
     public class UserRegisterTask extends AsyncTask<Void, Void,String> {
         private final User user;
         UserRegisterTask(User u) {
@@ -167,7 +175,7 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... params) {
             Log.i("doInBackground", Thread.currentThread().getName());
-            try {
+            try {//Change to 8080 becuase 8080 dont works in my netbeans
                 URL url = new URL("http://10.0.2.2:36182//SubscribeServlet?username="+this.user.getUsername()+"&password="+this.user.getPassword()
                         +"&email="+user.getEmail()+"&icon="+user.getIcon()+"&name="+user.getName());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

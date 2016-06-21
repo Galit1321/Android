@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleMessage(Message msg) {
                // Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
-                Intent i=new Intent(MainActivity.this,ChatActivity.class);//move to the explition window
+                Intent i=new Intent(MainActivity.this,RegisterActivity.class);//move to the explition window
                 startActivity(i);
             }
         };

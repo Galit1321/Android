@@ -214,7 +214,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
             else
             {
-               Toast.makeText(RegisterActivity.this, "Failed", Toast.LENGTH_LONG).show();
+               Toast.makeText(RegisterActivity.this, R.string.Fail, Toast.LENGTH_LONG).show();
             }
         }
 

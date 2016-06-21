@@ -45,34 +45,35 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:gravity="bottom|center">
         <RadioButton android:id="@+id/radio5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/radio5"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/radio4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text= "@string/radio4"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/radio3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/radio3"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/radio2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/radio2"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/radio1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/radio1"
             android:onClick="onRadioButtonClicked4"/>
     </RadioGroup>
+    <Button
+        android:id="@+id/skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/skip"/>
 </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

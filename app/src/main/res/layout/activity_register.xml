@@ -104,7 +104,7 @@
                 <RadioButton
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/pink"/>
+                    android:background="@drawable/butterfly_pink"/>
                 <RadioButton
                     android:id="@+id/lastRB"
                     android:layout_width="100dp"

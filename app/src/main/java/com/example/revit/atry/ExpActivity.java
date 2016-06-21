@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -185,7 +186,27 @@ public class ExpActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_exp, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            ImageView imageView = (ImageView) rootView.findViewById(R.id.section_image);
+            //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
+                case 1:
+                    textView.setText(getString(R.string.section1_format));
+                    break;
+                case 2:
+                    textView.setText(getString(R.string.section2_format));
+                    break;
+                case 3:
+                    textView.setText(getString(R.string.section3_format));
+                    break;
+                case 4:
+                    textView.setText(getString(R.string.section4_format));
+                    break;
+                case 5:
+                    textView.setText(getString(R.string.section5_format));
+                    break;
+
+            }
+            imageView.setImageResource(R.drawable.birdicon);
             return rootView;
         }
 

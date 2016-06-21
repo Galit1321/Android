@@ -29,9 +29,6 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_exp">ExpActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="pirates" />
-    <string name="ninjas" />
     <string name="done">Done</string>
     <string name="reset">Reset</string>
     <string name="error_invalid_email">invalid email address</string>
@@ -41,4 +38,10 @@
     <string name="radio3">3</string>
     <string name="radio2">2</string>
     <string name="radio1">1</string>
+    <string name="section1_format">Welcome</string>
+    <string name="section2_format">Let\'s tell you what we have</string>
+    <string name="section3_format">Its chat</string>
+    <string name="section5_format">enjoy</string>
+    <string name="section4_format">just write</string>
+    <string name="skip">Skip</string>
 </resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="app_name">אפליקציה</string>
+    <string name="title_activity_login">הירשם</string>
+
+    <!--String of Main activity-->
+
+    <string name="Shalom">שלום</string>
+    <string name="Gooodbye">להתראות</string>
+    <string name="Wise">בברכת ואיחולים</string>
+    <string name="Enjoy">תהנה מהישומון</string>
+    <string name="day">בברכת יום טוב</string>
+    <!-- Strings related to login -->
+    <string name="prompt_username">שם מתשמש</string>
+    <string name="prompt_password">סיסמא</string>
+    <string name="prompt_name">שם</string>
+    <string name="prompt_email">איימיל</string>
+    <string name="action_sign_in">היכנס</string>
+    <string name="register">הירשם</string>
+    <string name="Fail">נכשל</string>
+    <string name="action_sign_in_short">הירשם</string>
+    <string name="error_invalid_username">שם מתשמש לא תקין</string>
+    <string name="error_invalid_password">סיסמא קצרה מידי</string>
+    <string name="error_incorrect_password">סיסמא לא נכונה</string>
+    <string name="error_field_required">שדה דרוש</string>
+    <string name="incorrect_input">שם מתמש או סיסמא שגוי</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_register">הירדם</string>
+    <string name="title_activity_exp">הסבר</string>
+    <string name="action_settings">הגדרות</string>
+    <string name="done">היכנס</string>
+    <string name="reset">אתחל</string>
+    <string name="error_invalid_email">מיייל לא תקין</string>
+    <string name="error_no_icon">חייב לבחור תמונה</string>
+    <string name="radio5">5</string>
+    <string name="radio4">4</string>
+    <string name="radio3">3</string>
+    <string name="radio2">2</string>
+    <string name="radio1">1</string>
+    <string name="section1_format">שלום</string>
+    <string name="section2_format">בוא נספר לך מה יש לך</string>
+    <string name="section3_format">זהו שיח</string>
+    <string name="section5_format">תהנה</string>
+    <string name="section4_format">רק תכתוב</string>
+    <string name="skip">דלג</string>
+    <string name="send">שלח</string>
+</resources>

@@ -1,17 +1,28 @@
 package com.example.revit.atry;
 
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.List;
 
-/**
- * Created by גליתונופר on 21/06/2016.
- */
 public class ListAdapter extends BaseAdapter {
-    List<Post> myMsn;
+    private List<Post> myMsn;
+    private LayoutInflater inflater;
+    private AppCompatActivity activity;
 
+    /***
+     * constructor
+     * @param lst
+     * @param act
+     */
+    public ListAdapter(List lst, AppCompatActivity act){
+        this.myMsn=lst;
+        this.activity=act;
+    }
     @Override
     public int getCount() {
         return 0;

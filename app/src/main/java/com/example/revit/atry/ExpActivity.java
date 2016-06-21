@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class ExpActivity extends AppCompatActivity {
@@ -34,7 +36,7 @@ public class ExpActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
+    private static RadioGroup myRadioGroup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,72 @@ public class ExpActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
 
+        //checked radio button.
+        RadioButton fb = (RadioButton) findViewById(R.id.radio1);
+        fb.setChecked(true);
+        myRadioGroup = (RadioGroup) findViewById(R.id.radioGroupExp);
+        myRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checked) {
+                RadioButton rb;
+                switch (checked) {
+                    case 1:
+                        rb = (RadioButton) findViewById(R.id.radio1);
+                        rb.setChecked(true);
+                        break;
+                    case 2:
+                        rb = (RadioButton) findViewById(R.id.radio2);
+                        rb.setChecked(true);
+                        break;
+                    case 3:
+                        rb = (RadioButton) findViewById(R.id.radio3);
+                        rb.setChecked(true);
+                        break;
+                    case 4:
+                        rb = (RadioButton) findViewById(R.id.radio4);
+                        rb.setChecked(true);
+                        break;
+                    case 5:
+                        rb = (RadioButton) findViewById(R.id.radio5);
+                        rb.setChecked(true);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+           //             skip.setText(getString(R.string.skip));
+                        break;
+                    case 4:
+             //           skip.setText(getString(R.string.cont));
+                        break;
+                    default:
+                        break;
+                }
+                myRadioGroup.check(position+1);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +162,8 @@ public class ExpActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        int position;
+        boolean isCurrent;
 
         public PlaceholderFragment() {
         }
@@ -118,6 +188,10 @@ public class ExpActivity extends AppCompatActivity {
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
+
+     //   public void setPosition(int position) {
+       //     this.position = position;
+        //}
     }
 
     /**
@@ -134,7 +208,12 @@ public class ExpActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+
+            return ExpActivity.PlaceholderFragment.newInstance(position + 1);
+
+        //    PlaceholderFragment p = new PlaceholderFragment();
+          //  p.setPosition(position);
+            //return p;
         }
 
         @Override

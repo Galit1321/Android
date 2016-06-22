@@ -6,6 +6,7 @@ package com.example.revit.atry;
 public class Post {
     private String msn;
     private String timeStmp;
+    private String user;
 
     public String getTimeStmp() {
         return timeStmp;
@@ -22,15 +23,6 @@ public class Post {
     public void setMsn(String msn) {
         this.msn = msn;
     }
-
-    public int getNum() {
-        return num;
-    }
-
-    public void setNum(int num) {
-        this.num = num;
-    }
-
     public String getUser() {
         return user;
     }
@@ -39,6 +31,6 @@ public class Post {
         this.user = user;
     }
 
-    private String user;
-    private int num;
+
+
 }

@@ -9,13 +9,18 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.revit.atry.ChatActivity"
+    android:id="@+id/feed_swipeLayout"
     android:background="@drawable/bee_background2">
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/feed_lvPosts"></ListView>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/send"
-        android:id="@+id/button"
+        android:id="@+id/send_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -32,8 +37,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/button"
-        android:layout_toLeftOf="@+id/button"
-        android:layout_toStartOf="@+id/button"
+        android:layout_alignTop="@+id/send_button"
+        android:layout_toLeftOf="@+id/send_button"
+        android:layout_toStartOf="@+id/send_button"
         android:background="@color/colorOlive"/>
 </RelativeLayout>

@@ -60,9 +60,6 @@ public class ListAdapter extends BaseAdapter {
        user.setText(item.getUser());
         post.setText(item.getMsn());
         timestamp.setText(item.getTimeStmp());
-
-
-
         return convertView;
 
     }

@@ -175,6 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString("user",user.getUsername());
                 editor.putString("password",user.getPassword());
+                editor.commit();
                 finish();
             } else
             {

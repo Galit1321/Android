@@ -30,6 +30,8 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     EditText edt;
     Calendar calander;
     SimpleDateFormat simpleDateFormat;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,13 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
+    /**
+     * create new post that has the given argums as timestmp and msn
+     * with the user name that is save in the device
+     *
+     * @param time the time the msn was writen
+     * @param msn the msn the was input to edittext
+     */
     private void generateSelfPosts(String time, String msn) {
         Post item = new Post();
         item.setTimeStmp(time);

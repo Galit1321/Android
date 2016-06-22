@@ -104,6 +104,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 

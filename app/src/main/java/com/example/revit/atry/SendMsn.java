@@ -32,7 +32,7 @@ public class SendMsn {
     public void sendPost(){
         try{
         URL url = new URL("http://10.0.2.2:36182//RecMsnServlet?msn="+this.p.getMsn()+"&timeStmp="+this.p.getTimeStmp()
-                +"&username"+this.p.getUser());
+                +"&user"+this.p.getUser());
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod("POST");
         try {

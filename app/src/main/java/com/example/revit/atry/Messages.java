@@ -1,9 +1,9 @@
 package com.example.revit.atry;
 
 /**
- * Created by גליתונופר on 21/06/2016.
+ * Post class - keep the messages.
  */
-public class Post {
+public class Messages {
     private String msn;
     private String timeStmp;
 

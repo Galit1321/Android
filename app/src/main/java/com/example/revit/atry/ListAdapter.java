@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import java.util.List;
 
 public class ListAdapter extends BaseAdapter {
-    private List<Post> myMsn;
+    private List<Messages> myMsn;
     private LayoutInflater inflater;
     private AppCompatActivity activity;
 

@@ -24,12 +24,13 @@ import java.util.List;
 public class ChatActivity extends AppCompatActivity implements SensorEventListener {
     ListAdapter poststAdapter;
     ListView lstPosts;
-    List<Post> posts;
+    ArrayList<Messages> posts;
     SwipeRefreshLayout swipeLayout;
     SensorManager sensorManager;
     EditText edt;
     Calendar calander;
     SimpleDateFormat simpleDateFormat;
+    private SendMsn mAuthTask;
 
 
     @Override
@@ -41,20 +42,29 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
-        posts = new ArrayList<Post>();
-        poststAdapter = new ListAdapter(posts,this);
+        posts = new ArrayList<Messages>();
+        poststAdapter = new ListAdapter(this,posts);
         lstPosts.setAdapter(poststAdapter);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Button send=(Button)findViewById(R.id.send_button);
          edt=(EditText)findViewById(R.id.editText);
-        final String msn=edt.getText().toString();
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
                 String time = simpleDateFormat.format(calander.getTime());
-                generateSelfPosts(time,msn);
-                poststAdapter.notifyDataSetChanged();
+                Messages item = new Messages();
+                item.setTimeStmp(time);
+                item.setMsn(edt.getText().toString());
+                SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                //SharedPreferences.Editor ed = sharedPrefs.edit();
+                item.setUser("me");
+                poststAdapter.add(item);
+              //  Messages item =generateSelfPosts(time,);
+                //poststAdapter.notifyDataSetChanged();
+                mAuthTask = new SendMsn(item);//activate asyc commend of
+                mAuthTask.execute();
             }
         });
     }
@@ -67,16 +77,9 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
      * @param time the time the msn was writen
      * @param msn the msn the was input to edittext
      */
-    private void generateSelfPosts(String time, String msn) {
-        Post item = new Post();
-        item.setTimeStmp(time);
-        item.setMsn(msn);
-        SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor ed = sharedPrefs.edit();
-        item.setUser(sharedPrefs.getString("MyPrefs","user"));
-        posts.add(item);
-        SendMsn sm=new SendMsn(item);
-        sm.sendPost();
+    private Messages generateSelfPosts(String time, String msn) {
+
+        return null;
     }
 
     @Override

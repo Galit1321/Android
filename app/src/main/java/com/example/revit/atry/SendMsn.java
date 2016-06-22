@@ -22,6 +22,8 @@ import java.net.URL;
  */
 public class SendMsn extends AsyncTask<Void, Void, String> {
     private Messages p;
+public class SendMsn {
+    private Messages p;
 
     /**
      * constructor

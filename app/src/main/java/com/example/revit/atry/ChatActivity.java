@@ -1,5 +1,9 @@
 package com.example.revit.atry;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -15,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +29,7 @@ import java.util.List;
 public class ChatActivity extends AppCompatActivity implements SensorEventListener {
     ListAdapter poststAdapter;
     ListView lstPosts;
-    ArrayList<Messages> posts;
+    List<Messages> posts;
     SwipeRefreshLayout swipeLayout;
     SensorManager sensorManager;
     EditText edt;
@@ -32,18 +37,30 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     SimpleDateFormat simpleDateFormat;
     private SendMsn mAuthTask;
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Make update.
 
-    @Override
+            Toast.makeText(getApplicationContext(), "received", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
         setContentView(R.layout.activity_chat);
+
+        startService(new Intent(this, MyService.class));
+
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
         posts = new ArrayList<Messages>();
-        poststAdapter = new ListAdapter(this,posts);
+        poststAdapter = new ListAdapter(posts,this);
         lstPosts.setAdapter(poststAdapter);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Button send=(Button)findViewById(R.id.send_button);
@@ -77,26 +94,41 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
      * @param time the time the msn was writen
      * @param msn the msn the was input to edittext
      */
-    private Messages generateSelfPosts(String time, String msn) {
-
-        return null;
+    private void generateSelfPosts(String time, String msn) {
+        Messages item = new Messages();
+        item.setTimeStmp(time);
+        item.setMsn(msn);
+        SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sharedPrefs.edit();
+        item.setUser(sharedPrefs.getString("MyPrefs","user"));
+        posts.add(item);
+        SendMsn sm=new SendMsn(item);
+        sm.sendPost();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         // register this class as a listener for the orientation and
         // accelerometer sensors
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
-    }
+
+            //for the 5 min update
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(MyService.BROADCAST_ACTION);
+            registerReceiver(receiver, filter);
+
+            super.onResume();
+
+        }
 
     @Override
     protected void onPause() {
         // unregister listener
         super.onPause();
         sensorManager.unregisterListener(this);
+        unregisterReceiver(receiver);
     }
 
     @Override

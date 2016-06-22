@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ListAdapter extends BaseAdapter {
-    private List<Post> myMsn;
+    private List<Messages> myMsn;
     private LayoutInflater inflater;
     private AppCompatActivity activity;
 

@@ -1,5 +1,6 @@
 package com.example.revit.atry;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -38,6 +40,7 @@ public class ExpActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private static RadioGroup myRadioGroup;
+    private static Button skip;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +56,18 @@ public class ExpActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        skip = (Button) findViewById(R.id.skip);
+        skip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(ExpActivity.this, LoginActivity.class);//move to the explition window
+                    startActivity(i);
+                }
+    });
 
-        //checked radio button.
-        RadioButton fb = (RadioButton) findViewById(R.id.radio1);
+
+    //checked radio button.
+        RadioButton fb = (RadioButton) findViewById(R.id.radio5);
         fb.setChecked(true);
         myRadioGroup = (RadioGroup) findViewById(R.id.radioGroupExp);
         myRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -64,11 +76,11 @@ public class ExpActivity extends AppCompatActivity {
                 RadioButton rb;
                 switch (checked) {
                     case 1:
-                        rb = (RadioButton) findViewById(R.id.radio1);
+                        rb = (RadioButton) findViewById(R.id.radio5);
                         rb.setChecked(true);
                         break;
                     case 2:
-                        rb = (RadioButton) findViewById(R.id.radio2);
+                        rb = (RadioButton) findViewById(R.id.radio4);
                         rb.setChecked(true);
                         break;
                     case 3:
@@ -76,11 +88,11 @@ public class ExpActivity extends AppCompatActivity {
                         rb.setChecked(true);
                         break;
                     case 4:
-                        rb = (RadioButton) findViewById(R.id.radio4);
+                        rb = (RadioButton) findViewById(R.id.radio2);
                         rb.setChecked(true);
                         break;
                     case 5:
-                        rb = (RadioButton) findViewById(R.id.radio5);
+                        rb = (RadioButton) findViewById(R.id.radio1);
                         rb.setChecked(true);
                         break;
                     default:
@@ -97,17 +109,11 @@ public class ExpActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 switch (position) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
                     case 3:
-           //             skip.setText(getString(R.string.skip));
+                        skip.setText(getString(R.string.skip));
                         break;
                     case 4:
-             //           skip.setText(getString(R.string.cont));
+                        skip.setText(getString(R.string.contin));
                         break;
                     default:
                         break;
@@ -186,27 +192,32 @@ public class ExpActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_exp, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            textView.setTextSize(30);
             ImageView imageView = (ImageView) rootView.findViewById(R.id.section_image);
             //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
                 case 1:
                     textView.setText(getString(R.string.section1_format));
+                    imageView.setImageResource(R.drawable.hi);
                     break;
                 case 2:
                     textView.setText(getString(R.string.section2_format));
+                    imageView.setImageResource(R.drawable.what_we_have);
                     break;
                 case 3:
                     textView.setText(getString(R.string.section3_format));
+                    imageView.setImageResource(R.drawable.sign_up);
                     break;
                 case 4:
                     textView.setText(getString(R.string.section4_format));
+                    imageView.setImageResource(R.drawable.chatbubbles);
                     break;
                 case 5:
                     textView.setText(getString(R.string.section5_format));
+                    imageView.setImageResource(R.drawable.chatting);
                     break;
 
             }
-            imageView.setImageResource(R.drawable.birdicon);
             return rootView;
         }
 

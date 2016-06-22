@@ -17,4 +17,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="colorGray" parent="Theme.AppCompat.NoActionBar" >
+        <item name="colorPrimary">@android:color/tab_indicator_text</item>
+        <item name="colorPrimaryDark">@color/material_deep_teal_500</item>
+        <item name="android:colorBackground">@color/accent_material_light</item>
+    </style>
+
 </resources>

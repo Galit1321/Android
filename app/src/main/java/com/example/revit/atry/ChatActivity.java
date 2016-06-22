@@ -1,5 +1,9 @@
 package com.example.revit.atry;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -15,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,24 +29,36 @@ import java.util.List;
 public class ChatActivity extends AppCompatActivity implements SensorEventListener {
     ListAdapter poststAdapter;
     ListView lstPosts;
-    List<Post> posts;
+    List<Messages> posts;
     SwipeRefreshLayout swipeLayout;
     SensorManager sensorManager;
     EditText edt;
     Calendar calander;
     SimpleDateFormat simpleDateFormat;
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Make update.
 
-    @Override
+            Toast.makeText(getApplicationContext(), "received", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
         setContentView(R.layout.activity_chat);
+
+        startService(new Intent(this, MyService.class));
+
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
-        posts = new ArrayList<Post>();
+        posts = new ArrayList<Messages>();
         poststAdapter = new ListAdapter(posts,this);
         lstPosts.setAdapter(poststAdapter);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -68,7 +85,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
      * @param msn the msn the was input to edittext
      */
     private void generateSelfPosts(String time, String msn) {
-        Post item = new Post();
+        Messages item = new Messages();
         item.setTimeStmp(time);
         item.setMsn(msn);
         SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
@@ -81,20 +98,29 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onResume() {
-        super.onResume();
         // register this class as a listener for the orientation and
         // accelerometer sensors
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
-    }
+
+            //for the 5 min update
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(MyService.BROADCAST_ACTION);
+            registerReceiver(receiver, filter);
+
+            super.onResume();
+
+        }
 
     @Override
     protected void onPause() {
         // unregister listener
         super.onPause();
         sensorManager.unregisterListener(this);
+        unregisterReceiver(receiver);
     }
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {

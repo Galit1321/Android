@@ -15,13 +15,13 @@ import java.net.URL;
  * class to send the messge that this wrote
  */
 public class SendMsn {
-    private Post p;
+    private Messages p;
 
     /**
      * constructor
      * @param item
      */
-    public SendMsn(Post item){
+    public SendMsn(Messages item){
         this.p=item;
     }
 

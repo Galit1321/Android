@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorAqua">#00FFFF</color>
+    <color name="post"> #ffcc99</color>
+    <color name="post_corner">#ff9933</color>
 </resources>

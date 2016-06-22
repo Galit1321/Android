@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <string name="app_name">Chat</string>
+    <string name="app_name">BUZZ</string>
     <string name="title_activity_login">Sign in</string>
 
     <!--String of Main activity-->
@@ -39,11 +39,12 @@
     <string name="radio3">3</string>
     <string name="radio2">2</string>
     <string name="radio1">1</string>
-    <string name="section1_format">Welcome</string>
-    <string name="section2_format">Let\'s tell you what we have</string>
-    <string name="section3_format">Its chat</string>
-    <string name="section5_format">enjoy</string>
-    <string name="section4_format">just write</string>
+    <string name="section1_format">Hi, Welcome</string>
+    <string name="section2_format">Lets tell you what we have for you</string>
+    <string name="section3_format">Just sign up for the app</string>
+    <string name="section4_format">Get in to chat</string>
+    <string name="section5_format">And start chatting</string>
     <string name="skip">Skip</string>
     <string name="send">Send</string>
+    <string name="contin">Continue</string>
 </resources>

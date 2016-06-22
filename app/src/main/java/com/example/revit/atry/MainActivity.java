@@ -2,6 +2,7 @@ package com.example.revit.atry;
 
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -22,11 +23,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleMessage(Message msg) {
                // Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
-                Intent i=new Intent(MainActivity.this,RegisterActivity.class);//move to the explition window
-                startActivity(i);
+                SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor ed = sharedPrefs.edit();
+                //If user exist go to chat.
+                if(sharedPrefs.contains("user")){
+                    Intent i=new Intent(MainActivity.this,ChatActivity.class);//move to the explition window
+                    startActivity(i);
+                    //If user connect
+                } else if (sharedPrefs.contains("connect")) {
+                    Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
+                    startActivity(i);
+                    //First time.
+                } else {
+                    ed.putBoolean("connect", true);
+                    Intent i=new Intent(MainActivity.this,ExpActivity.class);//move to the explition window
+                    startActivity(i);
+                }
             }
         };
-        h.sendEmptyMessageDelayed(0, 5000); // wait  seconds and move to next page
+        h.sendEmptyMessageDelayed(0, 4000); // wait  seconds and move to next page
     }
 
 

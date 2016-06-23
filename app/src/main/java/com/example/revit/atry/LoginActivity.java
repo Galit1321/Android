@@ -175,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("user",user.getUsername());
                 editor.putString("password",user.getPassword());
                 editor.commit();
-                editor.apply();
+               /// editor.apply();
                 finish();
                 Intent i=new Intent(LoginActivity.this,ChatActivity.class);//move to the explition window
                 startActivity(i);

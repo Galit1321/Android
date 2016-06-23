@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.DataSetObserver;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -58,7 +59,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     };
 
 
-        @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -71,11 +72,18 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
         posts = new ArrayList<Messages>();
-        poststAdapter = new ListAdapter(this,posts);
+        poststAdapter = new ListAdapter(this, posts);
+        poststAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                lstPosts.setSelection(poststAdapter.getCount() - 1);
+            }
+        });
         lstPosts.setAdapter(poststAdapter);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Button send=(Button)findViewById(R.id.send_button);
-         edt=(EditText)findViewById(R.id.editText);
+        Button send = (Button) findViewById(R.id.send_button);
+        edt = (EditText) findViewById(R.id.editText);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,35 +95,19 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 item.setMsn(edt.getText().toString());
                 SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                 //SharedPreferences.Editor ed = sharedPrefs.edit();
-                item.setUser("me");
-               // poststAdapter.add(item);
-              //  Messages item =generateSelfPosts(time,);
+                item.setUser(sharedPrefs.getString("user", ""));
+                poststAdapter.add(item);
+                //  Messages item =generateSelfPosts(time,);
                 //poststAdapter.notifyDataSetChanged();
                 mAuthTask = new InnSendMsn(item);//activate asyc commend of
                 mAuthTask.execute();
+
+               // mAuthTask=null;
             }
         });
     }
 
 
-    /**
-     * create new post that has the given argums as timestmp and msn
-     * with the user name that is save in the device
-     *
-     * @param time the time the msn was writen
-     * @param msn the msn the was input to edittext
-     */
-    private void generateSelfPosts(String time, String msn) {
-        Messages item = new Messages();
-        item.setTimeStmp(time);
-       //    item.setMsn(msn);
-        SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor ed = sharedPrefs.edit();
-        item.setUser(sharedPrefs.getString("MyPrefs","user"));
-        posts.add(item);
-        SendMsn sm=new SendMsn(item);
-        //sm.sendPost();
-    }
 
     @Override
     protected void onResume() {
@@ -125,14 +117,14 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
 
-            //for the 5 min update
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(MyService.BROADCAST_ACTION);
-            registerReceiver(receiver, filter);
+        //for the 5 min update
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MyService.BROADCAST_ACTION);
+        registerReceiver(receiver, filter);
 
-            super.onResume();
+        super.onResume();
 
-        }
+    }
 
     @Override
     protected void onPause() {
@@ -145,7 +137,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-           // getAccelerometer(event);
+            // getAccelerometer(event);
         }
 
     }
@@ -156,7 +148,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
-    public class InnSendMsn extends AsyncTask<Void, Void, String> {
+    public class InnSendMsn extends AsyncTask<Void, Void, Void> {
         private Messages p;
 
         /**
@@ -172,7 +164,11 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
          * send this.p object to the servlet
          * in the web server that add to the database of massges
          */
-        public void sendPost() {
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            String jsonAns = "";
             try {
                 URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
                         + "&user" + this.p.getUser());
@@ -182,10 +178,6 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                     BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
                     StringBuilder responseStrBuilder = new StringBuilder();
-                    String inputStr;
-                    while ((inputStr = streamReader.readLine()) != null)
-                        responseStrBuilder.append(inputStr);
-                    JSONObject json = new JSONObject(responseStrBuilder.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -194,45 +186,9 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            return null;
         }
 
-        protected String doInBackground(Void... params) {
-            String jsonAns="";
-            try {
-                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
-                        + "&user" + this.p.getUser());
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("POST");
-                try {
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-                    StringBuilder responseStrBuilder = new StringBuilder();
-                    String inputStr;
-                    while ((inputStr = streamReader.readLine()) != null)
-                        responseStrBuilder.append(inputStr);
-                    JSONObject json = new JSONObject(responseStrBuilder.toString());
-                    jsonAns= json.getString("works");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    urlConnection.disconnect();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return jsonAns;
-        }
-
-@Override
-        protected void onPostExecute(final String userRec) {
-            Log.i("doInBackground", Thread.currentThread().getName());
-            if (userRec.equals("yes")) {
-                poststAdapter.add(p);
-                mAuthTask = null;
-            } else {
-            }
-        }
         @Override
         protected void onCancelled() {
             mAuthTask = null;

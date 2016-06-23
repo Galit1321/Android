@@ -14,10 +14,10 @@ public class User{
     public  User(){}
     public User(JSONObject object){
         try {
-            this.name = object.getString("Name");
-            this.password= object.getString("pass");
+            this.name = object.getString("name");
+            this.password= object.getString("password");
             this.icon=object.getString("icon");
-            this.username=object.getString("username");
+            this.username=object.getString("user_name");
             this.email=object.getString("email");
         } catch (JSONException e) {
             e.printStackTrace();

@@ -61,6 +61,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
         setContentView(R.layout.activity_chat);
@@ -112,8 +113,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = sharedPrefs.edit();
         item.setUser(sharedPrefs.getString("MyPrefs","user"));
-        posts.add(item);
-        SendMsn sm=new SendMsn(item);
+
         //sm.sendPost();
     }
 
@@ -132,7 +132,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
 
             super.onResume();
 
-        }
+    }
 
     @Override
     protected void onPause() {
@@ -145,7 +145,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-           // getAccelerometer(event);
+            // getAccelerometer(event);
         }
 
     }
@@ -198,7 +198,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         }
 
         protected String doInBackground(Void... params) {
-            String jsonAns="";
+            String jsonAns = "";
             try {
                 URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
                         + "&user" + this.p.getUser());

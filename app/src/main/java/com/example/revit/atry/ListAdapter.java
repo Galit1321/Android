@@ -27,15 +27,14 @@ public class ListAdapter extends ArrayAdapter<Messages>{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-            convertView=LayoutInflater.from(getContext()).inflate(R.layout.left,parent,false);
-
+        convertView=LayoutInflater.from(getContext()).inflate(R.layout.left,parent,false);
         TextView post = (TextView) convertView.findViewById(R.id.msgr);
         TextView timestamp = (TextView) convertView
                 .findViewById(R.id.time);
         TextView user = (TextView) convertView
                 .findViewById(R.id.user);
         Messages item = getItem(position);
-       user.setText(item.getUser());
+        user.setText(item.getUser());
         post.setText(item.getMsn());
         timestamp.setText(item.getTimeStmp());
         return convertView;

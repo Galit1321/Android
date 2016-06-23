@@ -18,7 +18,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -40,7 +39,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ChatActivity"
             android:windowSoftInputMode="adjustPan">
-            -<intent-filter>
+            <intent-filter>
             <action android:name="revit.ChatActiviy.new_move"/>
         </intent-filter>
         </activity>

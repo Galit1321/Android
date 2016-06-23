@@ -35,6 +35,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     EditText edt;
     Calendar calander;
     SimpleDateFormat simpleDateFormat;
+    private SendMsn mAuthTask;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -64,14 +65,23 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Button send=(Button)findViewById(R.id.send_button);
          edt=(EditText)findViewById(R.id.editText);
-        final String msn=edt.getText().toString();
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
                 String time = simpleDateFormat.format(calander.getTime());
-                generateSelfPosts(time,msn);
-                poststAdapter.notifyDataSetChanged();
+                Messages item = new Messages();
+                item.setTimeStmp(time);
+                item.setMsn(edt.getText().toString());
+                SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                //SharedPreferences.Editor ed = sharedPrefs.edit();
+                item.setUser("me");
+                poststAdapter.add(item);
+              //  Messages item =generateSelfPosts(time,);
+                //poststAdapter.notifyDataSetChanged();
+                mAuthTask = new SendMsn(item);//activate asyc commend of
+                mAuthTask.execute();
             }
         });
     }
@@ -121,7 +131,6 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         unregisterReceiver(receiver);
     }
 
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -129,7 +138,6 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         }
 
     }
-
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {

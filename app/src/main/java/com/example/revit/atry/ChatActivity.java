@@ -97,6 +97,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 //SharedPreferences.Editor ed = sharedPrefs.edit();
                 item.setUser(sharedPrefs.getString("user", ""));
                 poststAdapter.add(item);
+
                 //  Messages item =generateSelfPosts(time,);
                 //poststAdapter.notifyDataSetChanged();
                 mAuthTask = new InnSendMsn(item);//activate asyc commend of
@@ -171,7 +172,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
             String jsonAns = "";
             try {
                 URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
-                        + "&user" + this.p.getUser());
+                        + "&user=" + this.p.getUser());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 try {

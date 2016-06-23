@@ -88,7 +88,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                 //SharedPreferences.Editor ed = sharedPrefs.edit();
                 item.setUser("me");
-                poststAdapter.add(item);
+               // poststAdapter.add(item);
               //  Messages item =generateSelfPosts(time,);
                 //poststAdapter.notifyDataSetChanged();
                 mAuthTask = new InnSendMsn(item);//activate asyc commend of
@@ -108,13 +108,13 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     private void generateSelfPosts(String time, String msn) {
         Messages item = new Messages();
         item.setTimeStmp(time);
-        item.setMsn(msn);
+       //    item.setMsn(msn);
         SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = sharedPrefs.edit();
         item.setUser(sharedPrefs.getString("MyPrefs","user"));
         posts.add(item);
         SendMsn sm=new SendMsn(item);
-        sm.sendPost();
+        //sm.sendPost();
     }
 
     @Override
@@ -198,6 +198,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         }
 
         protected String doInBackground(Void... params) {
+            String jsonAns="";
             try {
                 URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
                         + "&user" + this.p.getUser());
@@ -211,7 +212,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                     while ((inputStr = streamReader.readLine()) != null)
                         responseStrBuilder.append(inputStr);
                     JSONObject json = new JSONObject(responseStrBuilder.toString());
-                    return json.getString("works");
+                    jsonAns= json.getString("works");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -220,19 +221,24 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return null;
+            return jsonAns;
         }
 
-
+@Override
         protected void onPostExecute(final String userRec) {
             Log.i("doInBackground", Thread.currentThread().getName());
             if (userRec.equals("yes")) {
-                //finish();
-
-
+                poststAdapter.add(p);
+                mAuthTask = null;
             } else {
             }
         }
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            //showProgress(false);
+        }
     }
+
 
 }

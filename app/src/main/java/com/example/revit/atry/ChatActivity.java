@@ -9,10 +9,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,13 +40,13 @@ import java.util.List;
 public class ChatActivity extends AppCompatActivity implements SensorEventListener {
     ListAdapter poststAdapter;
     ListView lstPosts;
-    List<Messages> posts;
+    ArrayList<Messages> posts;
     SwipeRefreshLayout swipeLayout;
     SensorManager sensorManager;
     EditText edt;
     Calendar calander;
     SimpleDateFormat simpleDateFormat;
-    private SendMsn mAuthTask;
+    private InnSendMsn mAuthTask;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -47,7 +58,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     };
 
 
-        @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -60,11 +71,11 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
         posts = new ArrayList<Messages>();
-        poststAdapter = new ListAdapter(posts,this);
+        poststAdapter = new ListAdapter(this,posts);
         lstPosts.setAdapter(poststAdapter);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Button send=(Button)findViewById(R.id.send_button);
-         edt=(EditText)findViewById(R.id.editText);
+        edt=(EditText)findViewById(R.id.editText);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,9 +89,9 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 //SharedPreferences.Editor ed = sharedPrefs.edit();
                 item.setUser("me");
                 poststAdapter.add(item);
-              //  Messages item =generateSelfPosts(time,);
+                //  Messages item =generateSelfPosts(time,);
                 //poststAdapter.notifyDataSetChanged();
-                mAuthTask = new SendMsn(item);//activate asyc commend of
+                mAuthTask = new InnSendMsn(item);//activate asyc commend of
                 mAuthTask.execute();
             }
         });
@@ -102,7 +113,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         SharedPreferences.Editor ed = sharedPrefs.edit();
         item.setUser(sharedPrefs.getString("MyPrefs","user"));
         posts.add(item);
-        SendMsn sm=new SendMsn(item);
+        InnSendMsn sm=new InnSendMsn(item);
         sm.sendPost();
     }
 
@@ -114,14 +125,14 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
 
-            //for the 5 min update
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(MyService.BROADCAST_ACTION);
-            registerReceiver(receiver, filter);
+        //for the 5 min update
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MyService.BROADCAST_ACTION);
+        registerReceiver(receiver, filter);
 
-            super.onResume();
+        super.onResume();
 
-        }
+    }
 
     @Override
     protected void onPause() {
@@ -134,7 +145,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-           // getAccelerometer(event);
+            // getAccelerometer(event);
         }
 
     }
@@ -143,4 +154,85 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
+
+
+    public class InnSendMsn extends AsyncTask<Void, Void, String> {
+        private Messages p;
+
+        /**
+         * constructor
+         *
+         * @param item
+         */
+        public InnSendMsn(Messages item) {
+            this.p = item;
+        }
+
+        /**
+         * send this.p object to the servlet
+         * in the web server that add to the database of massges
+         */
+        public void sendPost() {
+            try {
+                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                        + "&user" + this.p.getUser());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                try {
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                    StringBuilder responseStrBuilder = new StringBuilder();
+                    String inputStr;
+                    while ((inputStr = streamReader.readLine()) != null)
+                        responseStrBuilder.append(inputStr);
+                    JSONObject json = new JSONObject(responseStrBuilder.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        protected String doInBackground(Void... params) {
+            try {
+                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                        + "&user" + this.p.getUser());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                try {
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                    StringBuilder responseStrBuilder = new StringBuilder();
+                    String inputStr;
+                    while ((inputStr = streamReader.readLine()) != null)
+                        responseStrBuilder.append(inputStr);
+                    JSONObject json = new JSONObject(responseStrBuilder.toString());
+                    return json.getString("works");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+
+        protected void onPostExecute(final String userRec) {
+            Log.i("doInBackground", Thread.currentThread().getName());
+            if (userRec.equals("yes")) {
+                //finish();
+
+
+            } else {
+            }
+        }
+    }
+
 }

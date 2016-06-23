@@ -151,7 +151,6 @@ public class LoginActivity extends AppCompatActivity {
                       //user name dont exist or this isn't the correct password
                         return null;
                     }
-
                     return new User(json);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -176,6 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("user",user.getUsername());
                 editor.putString("password",user.getPassword());
                 editor.commit();
+                editor.apply();
                 finish();
                 Intent i=new Intent(LoginActivity.this,ChatActivity.class);//move to the explition window
                 startActivity(i);

@@ -1,11 +1,21 @@
 package com.example.revit.atry;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.widget.Toast;
+
+import java.util.GregorianCalendar;
 
 public class MyService extends Service {
-    public static String BROADCAST_ACTION = "ap2.biu.new_move";
+    SensorManager sensorManager;
+    private long lastUpdate;
+    public static String BROADCAST_ACTION = "revit.ChatActiviy.new_move";
 
     public MyService() {
     }
@@ -41,4 +51,11 @@ public class MyService extends Service {
         return START_STICKY;
 
     }
-}
+
+
+    private void getAccelerometer(SensorEvent event) {
+
+        }
+    }
+
+

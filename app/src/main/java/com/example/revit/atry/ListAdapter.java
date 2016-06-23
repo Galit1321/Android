@@ -26,11 +26,8 @@ public class ListAdapter extends ArrayAdapter<Messages>{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (inflater==null){
-            inflater=(LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
 
-            convertView=inflater.inflate(R.layout.left, parent, false);
+            convertView=LayoutInflater.from(getContext()).inflate(R.layout.left,parent,false);
 
         TextView post = (TextView) convertView.findViewById(R.id.msgr);
         TextView timestamp = (TextView) convertView

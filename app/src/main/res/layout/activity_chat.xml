@@ -9,36 +9,43 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.revit.atry.ChatActivity"
-    android:id="@+id/feed_swipeLayout"
+
     android:background="@drawable/bee_background2">
-
-    <ListView
+    <android.support.v4.widget.SwipeRefreshLayout android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/feed_lvPosts"></ListView>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send"
-        android:id="@+id/send_button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/bee_button"
-        android:textColor="@color/colorOlive"
-        android:textSize="22dp"
-        android:textStyle="bold"
-        android:gravity="left|center_vertical"/>
+        android:id="@+id/feed_swipeLayout">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/send_button"
-        android:layout_toLeftOf="@+id/send_button"
-        android:layout_toStartOf="@+id/send_button"
-        android:background="@color/colorOlive"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/feed_lvPosts"></ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send"
+            android:id="@+id/send_button"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bee_button"
+            android:textColor="@color/colorOlive"
+            android:textSize="22dp"
+            android:textStyle="bold"
+            android:gravity="left|center_vertical"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/send_button"
+            android:layout_toLeftOf="@+id/send_button"
+            android:layout_toStartOf="@+id/send_button"
+            android:background="@color/colorOlive"/>
+
+
+
 </RelativeLayout>

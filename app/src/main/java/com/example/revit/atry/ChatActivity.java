@@ -1,5 +1,6 @@
 package com.example.revit.atry;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -84,6 +86,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Button send = (Button) findViewById(R.id.send_button);
         edt = (EditText) findViewById(R.id.editText);
+        swipeLayout=(SwipeRefreshLayout)findViewById(R.id.feed_swipeLayout);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,16 +97,14 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 item.setTimeStmp(time);
                 item.setMsn(edt.getText().toString());
                 SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                //SharedPreferences.Editor ed = sharedPrefs.edit();
                 item.setUser(sharedPrefs.getString("user", ""));
                 poststAdapter.add(item);
-
-                //  Messages item =generateSelfPosts(time,);
-                //poststAdapter.notifyDataSetChanged();
+                //hide keyboard
+                InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                edt.setText("");
                 mAuthTask = new InnSendMsn(item);//activate asyc commend of
                 mAuthTask.execute();
-
-               // mAuthTask=null;
             }
         });
     }
@@ -122,7 +123,6 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         IntentFilter filter = new IntentFilter();
         filter.addAction(MyService.BROADCAST_ACTION);
         registerReceiver(receiver, filter);
-
         super.onResume();
 
     }
@@ -177,8 +177,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 urlConnection.setRequestMethod("POST");
                 try {
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-                    StringBuilder responseStrBuilder = new StringBuilder();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -195,7 +194,6 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
             mAuthTask = null;
             //showProgress(false);
         }
+
     }
-
-
 }

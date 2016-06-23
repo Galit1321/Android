@@ -15,7 +15,7 @@ import java.util.GregorianCalendar;
 public class MyService extends Service {
     SensorManager sensorManager;
     private long lastUpdate;
-    public static String BROADCAST_ACTION = "ap2.biu.new_move";
+    public static String BROADCAST_ACTION = "revit.ChatActiviy.new_move";
 
     public MyService() {
     }

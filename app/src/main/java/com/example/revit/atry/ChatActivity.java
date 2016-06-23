@@ -9,10 +9,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,13 +40,13 @@ import java.util.List;
 public class ChatActivity extends AppCompatActivity implements SensorEventListener {
     ListAdapter poststAdapter;
     ListView lstPosts;
-    List<Messages> posts;
+    ArrayList<Messages> posts;
     SwipeRefreshLayout swipeLayout;
     SensorManager sensorManager;
     EditText edt;
     Calendar calander;
     SimpleDateFormat simpleDateFormat;
-    private SendMsn mAuthTask;
+    private InnSendMsn mAuthTask;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -60,7 +71,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
         posts = new ArrayList<Messages>();
-        poststAdapter = new ListAdapter(posts,this);
+        poststAdapter = new ListAdapter(this,posts);
         lstPosts.setAdapter(poststAdapter);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Button send=(Button)findViewById(R.id.send_button);
@@ -80,7 +91,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 poststAdapter.add(item);
               //  Messages item =generateSelfPosts(time,);
                 //poststAdapter.notifyDataSetChanged();
-                mAuthTask = new SendMsn(item);//activate asyc commend of
+                mAuthTask = new InnSendMsn(item);//activate asyc commend of
                 mAuthTask.execute();
             }
         });
@@ -143,4 +154,85 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
+
+
+    public class InnSendMsn extends AsyncTask<Void, Void, String> {
+        private Messages p;
+
+        /**
+         * constructor
+         *
+         * @param item
+         */
+        public InnSendMsn(Messages item) {
+            this.p = item;
+        }
+
+        /**
+         * send this.p object to the servlet
+         * in the web server that add to the database of massges
+         */
+        public void sendPost() {
+            try {
+                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                        + "&user" + this.p.getUser());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                try {
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                    StringBuilder responseStrBuilder = new StringBuilder();
+                    String inputStr;
+                    while ((inputStr = streamReader.readLine()) != null)
+                        responseStrBuilder.append(inputStr);
+                    JSONObject json = new JSONObject(responseStrBuilder.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        protected String doInBackground(Void... params) {
+            try {
+                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                        + "&user" + this.p.getUser());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                try {
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                    StringBuilder responseStrBuilder = new StringBuilder();
+                    String inputStr;
+                    while ((inputStr = streamReader.readLine()) != null)
+                        responseStrBuilder.append(inputStr);
+                    JSONObject json = new JSONObject(responseStrBuilder.toString());
+                    return json.getString("works");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+
+        protected void onPostExecute(final String userRec) {
+            Log.i("doInBackground", Thread.currentThread().getName());
+            if (userRec.equals("yes")) {
+                //finish();
+
+
+            } else {
+            }
+        }
+    }
+
 }

@@ -39,7 +39,11 @@
             android:label="@string/title_activity_exp"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ChatActivity"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan">
+            -<intent-filter>
+            <action android:name="revit.ChatActiviy.new_move"/>
+        </intent-filter>
+        </activity>
     </application>
 
 </manifest>

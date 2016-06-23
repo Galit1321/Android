@@ -22,81 +22,79 @@ import java.net.URL;
  */
 public class SendMsn extends AsyncTask<Void, Void, String> {
     private Messages p;
-public class SendMsn {
-    private Messages p;
 
-    /**
-     * constructor
-     * @param item
-     */
-    public SendMsn(Messages item){
-        this.p=item;
-    }
-
-    /**
-     * send this.p object to the servlet
-     * in the web server that add to the database of massges
-     */
-    public void sendPost(){
-        try{
-        URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn="+this.p.getMsn()+"&timeStmp="+this.p.getTimeStmp()
-                +"&user"+this.p.getUser());
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        urlConnection.setRequestMethod("POST");
-        try {
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            StringBuilder responseStrBuilder = new StringBuilder();
-            String inputStr;
-            while ((inputStr = streamReader.readLine()) != null)
-                responseStrBuilder.append(inputStr);
-            JSONObject json = new JSONObject(responseStrBuilder.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            urlConnection.disconnect();
+        /**
+         * constructor
+         *
+         * @param item
+         */
+        public SendMsn(Messages item) {
+            this.p = item;
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
 
-    }
-
-    @Override
-    protected String doInBackground(Void... params) {
-        try {
-            URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
-                    + "&user" + this.p.getUser());
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("POST");
+        /**
+         * send this.p object to the servlet
+         * in the web server that add to the database of massges
+         */
+        public void sendPost() {
             try {
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-                StringBuilder responseStrBuilder = new StringBuilder();
-                String inputStr;
-                while ((inputStr = streamReader.readLine()) != null)
-                    responseStrBuilder.append(inputStr);
-                JSONObject json = new JSONObject(responseStrBuilder.toString());
-                return json.getString("works");
-            } catch (IOException e) {
+                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                        + "&user" + this.p.getUser());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                try {
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                    StringBuilder responseStrBuilder = new StringBuilder();
+                    String inputStr;
+                    while ((inputStr = streamReader.readLine()) != null)
+                        responseStrBuilder.append(inputStr);
+                    JSONObject json = new JSONObject(responseStrBuilder.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                urlConnection.disconnect();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }return null;
-    }
-
-    @Override
-    protected void onPostExecute(final String userRec) {
-        Log.i("doInBackground", Thread.currentThread().getName());
-        if (userRec.equals("yes")){
-            //finish();
-
 
         }
-        else {
+
+        protected String doInBackground(Void... params) {
+            try {
+                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                        + "&user" + this.p.getUser());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                try {
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                    StringBuilder responseStrBuilder = new StringBuilder();
+                    String inputStr;
+                    while ((inputStr = streamReader.readLine()) != null)
+                        responseStrBuilder.append(inputStr);
+                    JSONObject json = new JSONObject(responseStrBuilder.toString());
+                    return json.getString("works");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+
+        protected void onPostExecute(final String userRec) {
+            Log.i("doInBackground", Thread.currentThread().getName());
+            if (userRec.equals("yes")) {
+                //finish();
+
+
+            } else {
+            }
         }
     }
-}

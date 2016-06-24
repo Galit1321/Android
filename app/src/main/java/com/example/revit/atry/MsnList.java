@@ -26,21 +26,31 @@ public class MsnList {
      */
     public MsnList(JSONObject json) {
         JSONObject jObj = null;
-      //  ArrayList<Messages> res = new ArrayList<Msg>();
+     list = new ArrayList<Messages>();
         try {
-            JSONArray jArr = json.getJSONArray("list");
-            for (int i=0; i < jArr.length(); i++) {
-                JSONObject obj = jArr.getJSONObject(i);
-                String msg = obj.getString("msn");
-                int id=obj.getInt("id");
-                String user = obj.getString("user");
-                String timestamp = obj.getString("timestmp");
-                Messages m = new Messages(msg, timestamp,user,id);
-                list.add(m);
+            for (int i=0; i < 10; i++) {
+                String obj = json.getString(Integer.toString(i));
+                if (obj!=null){
+                Messages m =  desrlizeMg( obj);
+                list.add(m);}
             }
         } catch (JSONException e) {
             e.printStackTrace();
     }
+    }
+
+    public Messages desrlizeMg(String str){
+        try {
+            JSONObject obj = new JSONObject(str);
+            String msg = obj.getString("msn");
+            int id=obj.getInt("id");
+            String user = obj.getString("user");
+            String timestamp = obj.getString("timestmp");
+            return new Messages(msg, timestamp,user,id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     /**
      * GetList

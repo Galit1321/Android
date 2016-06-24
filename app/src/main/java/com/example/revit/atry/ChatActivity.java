@@ -150,7 +150,9 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-
+    /***
+     * inner class incharge of sending this post to the server
+     */
     public class InnSendMsn extends AsyncTask<Void, Void, Void> {
         private Messages p;
 
@@ -198,7 +200,11 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         }
 
     }
-public class GetMsgAsyc extends AsyncTask<Void,Void,MsnList>{
+
+    /**
+     *
+     */
+    public class GetMsgAsyc extends AsyncTask<Void,Void,MsnList>{
 
     private String type;
     public GetMsgAsyc(String type) {

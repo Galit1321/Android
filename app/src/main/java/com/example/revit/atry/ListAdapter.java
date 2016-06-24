@@ -1,6 +1,8 @@
 package com.example.revit.atry;
 
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -33,6 +35,12 @@ public class ListAdapter extends ArrayAdapter<Messages>{
                 .findViewById(R.id.time);
         TextView user = (TextView) convertView
                 .findViewById(R.id.user);
+
+        //can't get to shared Pref because not activity.
+      //  SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        //item.setUser(sharedPrefs.getString("user", ""));
+        //poststAdapter.add(item);
+
 
        user.setText(item.getUser());
         post.setText(item.getMsn());

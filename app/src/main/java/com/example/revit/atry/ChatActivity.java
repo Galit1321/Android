@@ -41,16 +41,17 @@ import java.util.Calendar;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity implements SensorEventListener {
-    ListAdapter poststAdapter;
-    ListView lstPosts;
-    ArrayList<Messages> posts;
-    SwipeRefreshLayout swipeLayout;
-    SensorManager sensorManager;
-    EditText edt;
-    Calendar calander;
-    SimpleDateFormat simpleDateFormat;
-    private InnSendMsn mAuthTask;
-
+  //members that relate to the layout
+    private ListView lstPosts;
+    private ArrayList<Messages> posts;
+    private SwipeRefreshLayout swipeLayout;
+    private SensorManager sensorManager;
+    private EditText edt;
+    //java class members for function in class
+    private Calendar calander;
+    private SimpleDateFormat simpleDateFormat;
+    private InnSendMsn mAuthTask;//inner class
+    private ListAdapter poststAdapter;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -60,14 +61,16 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         }
     };
 
-
+    private int lastId;//the id of the last message that listview contain
+    private int firstId;//the id of the first massage the we have in listview
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
         setContentView(R.layout.activity_chat);
-
+        lastId=0;
+        firstId=0;
         startService(new Intent(this, MyService.class));
 
         calander = Calendar.getInstance();
@@ -113,6 +116,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onResume() {
+        super.onResume();
         // register this class as a listener for the orientation and
         // accelerometer sensors
         sensorManager.registerListener(this,
@@ -123,8 +127,6 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         IntentFilter filter = new IntentFilter();
         filter.addAction(MyService.BROADCAST_ACTION);
         registerReceiver(receiver, filter);
-        super.onResume();
-
     }
 
     @Override
@@ -170,7 +172,6 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
 
         @Override
         protected Void doInBackground(Void... params) {
-            String jsonAns = "";
             try {
                 URL url = new URL("http://10.0.2.2:36182//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
                         + "&user=" + this.p.getUser());
@@ -190,10 +191,59 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
             return null;
         }
 
+
         @Override
         protected void onCancelled() {
             mAuthTask = null;
         }
 
     }
+public class GetMsgAsyc extends AsyncTask<Void,Void,MsnList>{
+
+    private String type;
+    public GetMsgAsyc(String type) {
+        this.type=type;
+    }
+
+    @Override
+    protected MsnList doInBackground(Void... params) {
+        try {
+            URL url = new URL("http://10.0.2.2:8080//MessagesServlet?first=" + firstId + "&last=" + lastId
+                    + "&type=" + this.type);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("POST");
+            try {
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                StringBuilder responseStrBuilder = new StringBuilder();
+                String inputStr;
+                while ((inputStr = streamReader.readLine()) != null)
+                    responseStrBuilder.append(inputStr);
+                JSONObject json = new JSONObject(responseStrBuilder.toString());
+                firstId=json.getInt("first");
+                lastId=json.getInt("last");
+                return new MsnList(json);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                urlConnection.disconnect();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    @Override
+    protected void onPostExecute(final MsnList lst) {
+        if (lst != null ) {
+
+        } else
+        {
+            Toast.makeText(ChatActivity.this, R.string.incorrect_input, Toast.LENGTH_LONG).show();
+        }
+    }
+}
+
+
 }

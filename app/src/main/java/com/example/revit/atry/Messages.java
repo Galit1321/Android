@@ -8,6 +8,26 @@ public class Messages {
     private String timeStmp;
     private String user;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private int id;
+
+    public Messages(String msn, String timeStmp, String user,int id) {
+        this.msn = msn;
+        this.id=id;
+        this.timeStmp = timeStmp;
+        this.user = user;
+    }
+
+    public Messages() {
+    }
+
     public String getTimeStmp() {
         return timeStmp;
     }

@@ -154,7 +154,8 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
 
         /**
          * constructor
-         *
+         * the inner class in charge of
+         *sending this texts to the server
          * @param item
          */
         public InnSendMsn(Messages item) {
@@ -171,7 +172,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         protected Void doInBackground(Void... params) {
             String jsonAns = "";
             try {
-                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                URL url = new URL("http://10.0.2.2:36182//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
                         + "&user=" + this.p.getUser());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
@@ -192,7 +193,6 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            //showProgress(false);
         }
 
     }

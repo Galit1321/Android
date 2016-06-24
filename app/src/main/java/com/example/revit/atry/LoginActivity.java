@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
         protected User doInBackground(Void... params) {///run in diff thread
             Log.i("doInBackground", Thread.currentThread().getName());//print the thread infomation
             try {
-                URL url = new URL("http://10.0.2.2:8080//MyFormServlet?username="+this.user_name+"&password="+this.password);
+                URL url = new URL("http://10.0.2.2:36182//MyFormServlet?username="+this.user_name+"&password="+this.password);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 try {

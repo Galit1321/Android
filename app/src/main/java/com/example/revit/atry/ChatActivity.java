@@ -71,7 +71,8 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_chat);
         lastId=0;
         firstId=0;
-        startService(new Intent(this, MyService.class));
+
+        startService(new Intent(ChatActivity.this, MyService.class));
 
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -241,12 +242,16 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         return null;
     }
     @Override
-    protected void onPostExecute(final MsnList lst) {
-        if (lst != null ) {
-
+    protected void onPostExecute(final MsnList mLst) {
+        if (mLst != null ) {
+           List<Messages> lst= mLst.getList();
+            for (int i=0;i<lst.size();i++){
+            poststAdapter.add(lst.get(i));
+            }
         } else
         {
-            Toast.makeText(ChatActivity.this, R.string.incorrect_input, Toast.LENGTH_LONG).show();
+            //dont need to go here
+            Toast.makeText(ChatActivity.this, R.string.fail_update, Toast.LENGTH_LONG).show();
         }
     }
 }

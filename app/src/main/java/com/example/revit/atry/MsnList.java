@@ -56,14 +56,14 @@ public class MsnList {
      * GetList
      * @return list of messages
      */
-    public List<Messages> GetList() {
+    public List<Messages> getList() {
         return list;
     }
     /**
      * SetList - set new messages list.
      * @param l - list
      */
-    public void SetList(List<Messages> l) {
+    public void setList(List<Messages> l) {
         list = l;
     }
 }

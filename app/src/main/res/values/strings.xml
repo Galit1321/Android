@@ -47,4 +47,6 @@
     <string name="skip">Skip</string>
     <string name="send">Send</string>
     <string name="contin">Continue</string>
+    <!---ChatActivity string-->
+    <string name="fail_update">fail to get new msg</string>
 </resources>

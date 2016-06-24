@@ -38,12 +38,6 @@ public class MyService extends Service {
     }
 
     private void handleStart(Intent intent, int startId) {
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         showNotification();
     }
 

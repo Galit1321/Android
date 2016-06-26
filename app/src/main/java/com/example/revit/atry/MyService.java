@@ -13,13 +13,14 @@ import java.util.Calendar;
 
 public class MyService extends Service {
     private NotificationManager mNM;
+    Calendar cur_cal = Calendar.getInstance();
     public static String BROADCAST_ACTION = "revit.ChatActiviy.new_move";
 
     public MyService() {
     }
 
 
-        Calendar cur_cal = Calendar.getInstance();
+
         @Override
         public void onCreate() {
             super.onCreate();
@@ -42,8 +43,22 @@ public class MyService extends Service {
     }
 
     private void showNotification() {
+        Intent resultIntent = new Intent(MyService.this, ChatActivity.class);
+        resultIntent.setAction("android.intent.action.MAIN");
+        resultIntent.addCategory("android.intent.category.LAUNCHER");
+        PendingIntent contentIntent = PendingIntent.getActivity(MyService.this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Set the info for the views that show in the notification panel.
+        NotificationCompat.Builder notification =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("New Information")
+                        .setContentText("you have new messages");
+        notification.setContentIntent( contentIntent);
+        // Send the notification. 8191 is the id to this notifiction
+       // nfc.notify(8191,notification.build());
         // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+     /*   PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, ChatActivity.class), 0);
 
         // Set the info for the views that show in the notification panel.
@@ -52,7 +67,7 @@ public class MyService extends Service {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("New Information")
                         .setContentText("you have new messages");
-        // Send the notification.
+        // Send the notification.*/
         mNM.notify(001,notification.build());
     }
 

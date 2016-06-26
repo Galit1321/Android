@@ -1,6 +1,8 @@
 package com.example.revit.atry;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +40,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity implements SensorEventListener {
@@ -52,6 +55,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     private SimpleDateFormat simpleDateFormat;
     private InnSendMsn mAuthTask;//inner class
     private ListAdapter poststAdapter;
+    private ChatActivity gainAcess;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -70,10 +74,9 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         getSupportActionBar().setCustomView(R.layout.actionbar);
         setContentView(R.layout.activity_chat);
         lastId=0;
+        gainAcess=this;
         firstId=0;
-
         startService(new Intent(ChatActivity.this, MyService.class));
-
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
@@ -150,7 +153,19 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
-
+    /*
+    public void notification(){
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyService.BROADCAST_ACTION);
+        registerReceiver(receiver, intentFilter);
+        AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        //300000
+        Long timeToAlert = new GregorianCalendar().getTimeInMillis() + 300000;
+        Intent intent = new Intent(ChatActivity.this,NotificationReceiver.class);
+        intent.putExtra("sender", "one");
+        alarmMgr.set(AlarmManager.RTC_WAKEUP, timeToAlert, PendingIntent.getBroadcast(ChatActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
+    }
+*/
     /***
      * inner class incharge of sending this post to the server
      */
@@ -181,8 +196,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 try {
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
+                    urlConnection.getInputStream();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {

@@ -25,12 +25,11 @@ public class MsnList {
      * @param json
      */
     public MsnList(JSONObject json) {
-        JSONObject jObj = null;
      list = new ArrayList<Messages>();
         try {
             for (int i=0; i < 10; i++) {
                 String obj = json.getString(Integer.toString(i));
-                if (obj!=null){
+                if (obj!=null){//we have an i post in the json object
                 Messages m =  desrlizeMg( obj);
                 list.add(m);}
             }
@@ -39,9 +38,14 @@ public class MsnList {
     }
     }
 
-    public Messages desrlizeMg(String str){
+    /**
+     *
+     * @param json
+     * * @return a deselize object of given json string
+     */
+    public Messages desrlizeMg(String json){
         try {
-            JSONObject obj = new JSONObject(str);
+            JSONObject obj = new JSONObject(json);
             String msg = obj.getString("msn");
             int id=obj.getInt("id");
             String user = obj.getString("user");

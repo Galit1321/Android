@@ -56,6 +56,9 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     private InnSendMsn mAuthTask;//inner class
     private ListAdapter poststAdapter;
     private ChatActivity gainAcess;
+    private boolean newData;
+    private boolean check;
+    private InnerCheckAsyc checkAsyc;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -148,10 +151,25 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         }
 
     }
-
+    /***
+     * check if the num pf last massage in
+     * the data base
+     */
+    public void checkForLastMsg() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        int last = pref.getInt("last", -1);//acsess last for the ayc class
+        checkAsyc= new InnerCheckAsyc(last);
+        checkAsyc.execute();
+    }
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+    public Boolean isNew() {
+        while (!newData){
+            //do in background didn't finish it's work
+        }
+        return check;
     }
     /*
     public void notification(){
@@ -215,60 +233,111 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         }
 
     }
-
-    /**
-     *
+    /***
+     * inner class to check if there is need for a notification
+     * meaning that we have new massages in the data base
      */
-    public class GetMsgAsyc extends AsyncTask<Void,Void,MsnList>{
+    public class InnerCheckAsyc extends AsyncTask<Void, Void,String> {
+        public int last;
+        public String cookie = null;
 
-    private String type;
-    public GetMsgAsyc(String type) {
-        this.type=type;
-    }
+        public InnerCheckAsyc(int last) {
+            this.last = last;
+        }
 
-    @Override
-    protected MsnList doInBackground(Void... params) {
-        try {
-            URL url = new URL("http://10.0.2.2:8080//MessagesServlet?first=" + firstId + "&last=" + lastId
-                    + "&type=" + this.type);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("POST");
+        @Override
+        protected String doInBackground(Void... params) {
             try {
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-                StringBuilder responseStrBuilder = new StringBuilder();
-                String inputStr;
-                while ((inputStr = streamReader.readLine()) != null)
-                    responseStrBuilder.append(inputStr);
-                JSONObject json = new JSONObject(responseStrBuilder.toString());
-                firstId=json.getInt("first");
-                lastId=json.getInt("last");
-                return new MsnList(json);
-            } catch (IOException e) {
+                URL url = new URL("http://10.0.2.2:36182//ChecLastServlet?last=" + this.last);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                try {
+                    cookie = urlConnection.getHeaderField("Set-Cookie");
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                    StringBuilder responseStrBuilder = new StringBuilder();
+                    String inputStr;
+                    while ((inputStr = streamReader.readLine()) != null)
+                        responseStrBuilder.append(inputStr);
+                    JSONObject json = new JSONObject(responseStrBuilder.toString());
+                    return json.getString("have");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                urlConnection.disconnect();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
 
-        return null;
-    }
-    @Override
-    protected void onPostExecute(final MsnList mLst) {
-        if (mLst != null ) {
-           List<Messages> lst= mLst.getList();
-            for (int i=0;i<lst.size();i++){
-            poststAdapter.add(lst.get(i));
+        @Override
+        protected void onPostExecute(final String isItNew) {
+            if (isItNew != null) {
+                newData = true;
+                if (isItNew.equals("yes"))
+                    check = true;
+            } else {
+                Toast.makeText(ChatActivity.this, "lost connection to server", Toast.LENGTH_LONG).show();
             }
-        } else
-        {
-            //dont need to go here
-            Toast.makeText(ChatActivity.this, R.string.fail_update, Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         *
+         */
+        public class GetMsgAsyc extends AsyncTask<Void, Void, MsnList> {
+
+            private String type;
+
+            public GetMsgAsyc(String type) {
+                this.type = type;
+            }
+
+            @Override
+            protected MsnList doInBackground(Void... params) {
+                try {
+                    URL url = new URL("http://10.0.2.2:8080//MessagesServlet?first=" + firstId + "&last=" + lastId
+                            + "&type=" + this.type);
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    try {
+                        InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                        BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                        StringBuilder responseStrBuilder = new StringBuilder();
+                        String inputStr;
+                        while ((inputStr = streamReader.readLine()) != null)
+                            responseStrBuilder.append(inputStr);
+                        JSONObject json = new JSONObject(responseStrBuilder.toString());
+                        firstId = json.getInt("first");
+                        lastId = json.getInt("last");
+                        return new MsnList(json);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        urlConnection.disconnect();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(final MsnList mLst) {
+                if (mLst != null) {
+                    List<Messages> lst = mLst.getList();
+                    for (int i = 0; i < lst.size(); i++) {
+                        poststAdapter.add(lst.get(i));
+                    }
+                } else {
+                    //dont need to go here
+                    Toast.makeText(ChatActivity.this, R.string.fail_update, Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
 }
 
 
-}

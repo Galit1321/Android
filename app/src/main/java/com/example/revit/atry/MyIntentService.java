@@ -41,7 +41,7 @@ public class MyIntentService extends IntentService {
 //    private NewMsgTask lAuthTask;
     Calendar cur_cal ;
     private  Boolean check = false;
-    private  Boolean arrived = false;
+    private  Boolean newData = false;
     private NotificationManager nfc;
 
     public MyIntentService() {
@@ -86,79 +86,28 @@ public class MyIntentService extends IntentService {
     }
 
     public Boolean isNew() {
-        while (!arrived){}
+        while (!newData){
+            //do in background didn't finish it's work
+        }
         return check;
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
        while (true){
-           try {
-               Thread.sleep(1000);//wait 1 min
-           }catch (InterruptedException ex){
-               ex.printStackTrace();
-           }
-           Boolean boo=isNew();
-           if (boo) {
-               showNotification();
-           }
-           /*
-            MessagesActivity m = MessagesActivity.obj;
-            if (m == null) {
-                checkNewMsg();
-                Boolean boo = checkOut();
-                if (boo) {
-                    NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(MyIntentService.this)
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle("Chatty")
-                            .setContentText("new messages arrived");
-                    //specifying an action and its category to be triggered once clicked on the notification
-                    Intent resultIntent = new Intent(MyIntentService.this, MessagesActivity.class);
-                    resultIntent.setAction("android.intent.action.MAIN");
-                    resultIntent.addCategory("android.intent.category.LAUNCHER");
 
-                    PendingIntent resultPendingIntent = PendingIntent.getActivity(MyIntentService.this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                    //building the notification
-                    mBuilder.setContentIntent(resultPendingIntent);
-                    int mNotificationId = 001;
-                    NotificationManager mNotifyMgr =
-                            (NotificationManager) MyIntentService.this.getSystemService(MyIntentService.this.NOTIFICATION_SERVICE);
-                    mNotifyMgr.notify(mNotificationId, mBuilder.build());
-                }
-            } else {
-                m.checkNewMsg();
-                Boolean boo = m.checkOut();
-                if (boo) {
-                    m.actionNotification();
-                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MyIntentService.this)
-                            .setSmallIcon(R.drawable.logo)
-                            .setContentTitle("Chatty")
-                            .setContentText("new messages arrived");
-                    int mNotificationId = 001;
-                    NotificationManager mNotifyMgr =
-                            (NotificationManager) MyIntentService.this.getSystemService(MyIntentService.this.NOTIFICATION_SERVICE);
-
-                    Intent resultIntent = new Intent(m, MessagesActivity.class);
-
-                    PendingIntent resultPendingIntent =
-                            PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                    mBuilder.setContentIntent(resultPendingIntent);
-                    mBuilder.setAutoCancel(true);
-
-                    mNotifyMgr.notify(mNotificationId, mBuilder.build());
-
-                }
-            }*/
        }
     }
 
     public void handleHelper(ChatActivity c_act){
-        boolean new_info=isNew();
         if (c_act==null){//meaning the activity is not active
             checkForLastMsg();
-        }
+            boolean aged=isNew();
+
+        }else{
+            c_act.checkForLastMsg();
+            boolean aged=c_act.isNew();
+        }showNotification(c_act);
     }
 
     /***
@@ -168,14 +117,18 @@ public class MyIntentService extends IntentService {
     public void checkForLastMsg() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         int last = pref.getInt("last", -1);//acsess last for the ayc class
-        checkAsyc= new InnerCheckAsyc(last);////
+        checkAsyc= new InnerCheckAsyc(last);
         checkAsyc.execute();
     }
 
-    private void showNotification() {
+    private void showNotification(ChatActivity chatActivity) {
+        Intent resultIntent;
+        if (chatActivity!=null){
+            resultIntent = new Intent(chatActivity, ChatActivity.class);
+        }
         // The PendingIntent to launch our activity if the user selects this notification
         //specifying an action and its category to be triggered once clicked on the notification
-        Intent resultIntent = new Intent(MyIntentService.this, ChatActivity.class);
+        resultIntent = new Intent(MyIntentService.this, ChatActivity.class);
         resultIntent.setAction("android.intent.action.MAIN");
         resultIntent.addCategory("android.intent.category.LAUNCHER");
         PendingIntent contentIntent = PendingIntent.getActivity(MyIntentService.this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -183,11 +136,13 @@ public class MyIntentService extends IntentService {
         // Set the info for the views that show in the notification panel.
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.logo)
                         .setContentTitle("New Information")
                         .setContentText("you have new messages");
         notification.setContentIntent( contentIntent);
         // Send the notification. 8191 is the id to this notifiction
+
+        notification.setAutoCancel(true);//dimiss the notification when is press
         nfc.notify(8191,notification.build());
     }
 
@@ -209,6 +164,10 @@ public class MyIntentService extends IntentService {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    /***
+     * inner class to check if there is need for a notification
+     * meaning that we have new massages in the data base
+     */
     public class InnerCheckAsyc extends AsyncTask<Void, Void,String> {
     public int last;
         public String cookie = null;
@@ -243,9 +202,10 @@ public class MyIntentService extends IntentService {
         }
 
     @Override
-    protected void onPostExecute(final String answer) {
-        if (answer!=null){
-            arrived = true;
+    protected void onPostExecute(final String isItNew) {
+        if (isItNew!=null){
+            newData = true;
+            if (isItNew.equals("yes"))
             check = true;
         } else
         {
@@ -255,7 +215,7 @@ public class MyIntentService extends IntentService {
 
     @Override
     protected void onCancelled() {
-        //lAuthTask = null;
+        checkAsyc= null;//stop asyc
     }
 }
 }

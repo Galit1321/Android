@@ -95,20 +95,21 @@ public class MyIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
        while (true){
-
-       }
+           boolean aged;
+           ChatActivity c_act=ChatActivity.gainAcess;
+           if (c_act==null){//meaning the activity is not active
+               checkForLastMsg();
+               aged=isNew();
+           }else{
+               c_act.checkForLastMsg();
+               aged=c_act.isNew();
+           }
+           if(aged){
+               showNotification(c_act);
+             }
+        }
     }
 
-    public void handleHelper(ChatActivity c_act){
-        if (c_act==null){//meaning the activity is not active
-            checkForLastMsg();
-            boolean aged=isNew();
-
-        }else{
-            c_act.checkForLastMsg();
-            boolean aged=c_act.isNew();
-        }showNotification(c_act);
-    }
 
     /***
      * check if the num pf last massage in
@@ -125,10 +126,11 @@ public class MyIntentService extends IntentService {
         Intent resultIntent;
         if (chatActivity!=null){
             resultIntent = new Intent(chatActivity, ChatActivity.class);
+        }else{
+            resultIntent = new Intent(MyIntentService.this, ChatActivity.class);
         }
         // The PendingIntent to launch our activity if the user selects this notification
         //specifying an action and its category to be triggered once clicked on the notification
-        resultIntent = new Intent(MyIntentService.this, ChatActivity.class);
         resultIntent.setAction("android.intent.action.MAIN");
         resultIntent.addCategory("android.intent.category.LAUNCHER");
         PendingIntent contentIntent = PendingIntent.getActivity(MyIntentService.this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);

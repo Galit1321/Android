@@ -18,6 +18,7 @@
             <action android:name="android.intent.action.BOOT_COMPLETED" />
         </intent-filter>
     </receiver>
+
     <!-- -way for the appiction to get pesmission to internt -->
     <application
         android:allowBackup="true"
@@ -59,7 +60,11 @@
 
         <service
             android:name=".MyService"
-            android:exported="true"></service>
+            android:exported="true" />
+        <service
+            android:name=".MyIntentService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

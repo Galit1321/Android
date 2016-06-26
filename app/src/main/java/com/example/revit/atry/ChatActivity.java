@@ -55,7 +55,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     private SimpleDateFormat simpleDateFormat;
     private InnSendMsn mAuthTask;//inner class
     private ListAdapter poststAdapter;
-    private ChatActivity gainAcess;
+   public static ChatActivity gainAcess;
     private boolean newData;
     private boolean check;
     private InnerCheckAsyc checkAsyc;
@@ -156,9 +156,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
      * the data base
      */
     public void checkForLastMsg() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        int last = pref.getInt("last", -1);//acsess last for the ayc class
-        checkAsyc= new InnerCheckAsyc(last);
+        checkAsyc= new InnerCheckAsyc(lastId);
         checkAsyc.execute();
     }
     @Override

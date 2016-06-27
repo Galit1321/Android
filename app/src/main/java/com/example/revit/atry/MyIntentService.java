@@ -49,7 +49,7 @@ public class MyIntentService extends IntentService {
         cur_cal =Calendar.getInstance();
         Intent intent = new Intent(this, MyService.class);
         nfc = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        PendingIntent pintent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
+        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
         AlarmManager alarm = (android.app.AlarmManager) getSystemService(Context.ALARM_SERVICE);
         cur_cal.setTimeInMillis(System.currentTimeMillis());
         alarm.setRepeating(android.app.AlarmManager.RTC_WAKEUP, cur_cal.getTimeInMillis(), 60 * 5000, pintent);
@@ -107,6 +107,7 @@ public class MyIntentService extends IntentService {
            if(aged){
                showNotification(c_act);
              }
+           stopSelf();
         }
     }
 
@@ -126,6 +127,8 @@ public class MyIntentService extends IntentService {
         Intent resultIntent;
         if (chatActivity!=null){
             resultIntent = new Intent(chatActivity, ChatActivity.class);
+            chatActivity.setCheck(false);
+
         }else{
             resultIntent = new Intent(MyIntentService.this, ChatActivity.class);
         }

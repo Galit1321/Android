@@ -97,7 +97,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         lastId=0;
         gainAcess=this;
         firstId=0;
-        startService(new Intent(ChatActivity.this, MyService.class));
+        //startService(new Intent(ChatActivity.this, MyService.class));
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
@@ -135,16 +135,15 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 mAuthTask.execute();
             }
         });
+       resetListView("shake");
     }
 
 
     public void resetListView(String method){
         this.listAsyc = new GetMsgAsyc(method);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            this.listAsyc.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
-        } else {
-            this.listAsyc.execute((Void) null);
-        }
+
+            this.listAsyc.execute();
+
     }
  @Override
  protected void onStop(){
@@ -238,7 +237,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:36182//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
                         + "&user=" + this.p.getUser());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
@@ -277,7 +276,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected String doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:36182//ChecLastServlet?last=" + this.last);
+                URL url = new URL("http://10.0.2.2:8080//ChecLastServlet?last=" + this.last);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 try {
@@ -318,6 +317,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     public class GetMsgAsyc extends AsyncTask<Void, Void, MsnList> {
 
         private String method;
+        public  String cookie=null;
         public GetMsgAsyc(String type) {
             this.method = type;
         }
@@ -325,12 +325,16 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected MsnList doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:8080//SendMsnServlet?first=" + firstId + "&last=" + lastId
+                URL url = new URL("http://10.0.2.2:8080///SendMsnServlet?first=" + firstId + "&last=" + lastId
                         + "&type=" + this.method);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
                 try {
+                    urlConnection.setRequestProperty("Cookie",cookie);
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    cookie=urlConnection.getHeaderField("Set-Cookie");
                     BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
                     StringBuilder responseStrBuilder = new StringBuilder();
                     String inputStr;

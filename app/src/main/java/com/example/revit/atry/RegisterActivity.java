@@ -176,7 +176,7 @@ public class RegisterActivity extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             Log.i("doInBackground", Thread.currentThread().getName());
             try {//Change to 8080 becuase 8080 dont works in my netbeans
-                URL url = new URL("http://10.0.2.2:36182//SubscribeServlet?username="+this.user.getUsername()+"&password="+this.user.getPassword()
+                URL url = new URL("http://10.0.2.2:8080//SubscribeServlet?username="+this.user.getUsername()+"&password="+this.user.getPassword()
                         +"&email="+user.getEmail()+"&icon="+user.getIcon()+"&name="+user.getName());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");

@@ -369,6 +369,9 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 for (int i = 0; i < lst.size(); i++) {
                     poststAdapter.add(lst.get(i));
                 }
+                if (method.equals("swipe")) {
+                    swipeLayout.setRefreshing(false);
+                }
             } else {
                 //dont need to go here
                 Toast.makeText(ChatActivity.this, R.string.fail_update, Toast.LENGTH_LONG).show();

@@ -39,20 +39,15 @@ public class MyIntentService extends IntentService {
     private static final String EXTRA_PARAM2 = "com.example.revit.atry.extra.PARAM2";
     InnerCheckAsyc checkAsyc;
 //    private NewMsgTask lAuthTask;
-    Calendar cur_cal ;
-    private  Boolean check = false;
-    private  Boolean newData = false;
+    private  Boolean check;
+    private  Boolean newData;
     private NotificationManager nfc;
 
     public MyIntentService() {
         super("MyIntentService");
-        cur_cal =Calendar.getInstance();
-        Intent intent = new Intent(this, MyService.class);
-        nfc = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
-        AlarmManager alarm = (android.app.AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        cur_cal.setTimeInMillis(System.currentTimeMillis());
-        alarm.setRepeating(android.app.AlarmManager.RTC_WAKEUP, cur_cal.getTimeInMillis(), 60 * 5000, pintent);
+check=false;
+        newData=false;
+
     }
 
     /**
@@ -94,7 +89,13 @@ public class MyIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
        while (true){
+           try {
+               Thread.sleep(30000);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
            boolean aged;
            ChatActivity c_act=ChatActivity.gainAcess;
            if (c_act==null){//meaning the activity is not active
@@ -102,12 +103,12 @@ public class MyIntentService extends IntentService {
                aged=isNew();
            }else{
                c_act.checkForLastMsg();
+
                aged=c_act.isNew();
            }
            if(aged){
                showNotification(c_act);
              }
-           stopSelf();
         }
     }
 
@@ -126,6 +127,7 @@ public class MyIntentService extends IntentService {
     private void showNotification(ChatActivity chatActivity) {
         Intent resultIntent;
         if (chatActivity!=null){
+            chatActivity.resetListView("shake");
             resultIntent = new Intent(chatActivity, ChatActivity.class);
             chatActivity.setCheck(false);
 
@@ -146,6 +148,7 @@ public class MyIntentService extends IntentService {
                         .setContentText("you have new messages");
         notification.setContentIntent( contentIntent);
         // Send the notification. 8191 is the id to this notifiction
+        nfc = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
         notification.setAutoCancel(true);//dimiss the notification when is press
         nfc.notify(8191,notification.build());
@@ -182,7 +185,7 @@ public class MyIntentService extends IntentService {
         @Override
         protected String doInBackground(Void... params) {
             try{
-            URL url = new URL("http://10.0.2.2:36182//ChecLastServlet?last="+this.last);
+            URL url = new URL("http://10.0.2.2:8080//ChecLastServlet?last="+this.last);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
             try {
@@ -194,7 +197,7 @@ public class MyIntentService extends IntentService {
                 while ((inputStr = streamReader.readLine()) != null)
                     responseStrBuilder.append(inputStr);
                 JSONObject json = new JSONObject(responseStrBuilder.toString());
-                return  json.getString("have");
+                return  json.getString("haveUpdate");
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -214,7 +217,7 @@ public class MyIntentService extends IntentService {
             check = true;
         } else
         {
-            Toast.makeText(MyIntentService.this, "lost connection to server", Toast.LENGTH_LONG).show();
+            Toast.makeText(MyIntentService.this, "lost con to server in service", Toast.LENGTH_LONG).show();
         }
     }
 

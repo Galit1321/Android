@@ -1,8 +1,6 @@
 package com.example.revit.atry;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,15 +12,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,7 +35,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
@@ -51,13 +44,14 @@ public class ChatActivity extends AppCompatActivity {
     private ListView lstPosts;
     private ArrayList<Messages> posts;
     private SwipeRefreshLayout swipeLayout;
+    private SensorManager sensorManager;
     private EditText edt;
     //java class members for function in class
     private Calendar calander;
     private SimpleDateFormat simpleDateFormat;
     private InnSendMsn mAuthTask;//inner class
     private ListAdapter poststAdapter;
-    private boolean newData;
+    private  boolean newData;
     private InnerCheckAsyc checkAsyc;
     private GetMsgAsyc listAsyc;
     private SensorManager sensorManager;
@@ -80,7 +74,6 @@ public class ChatActivity extends AppCompatActivity {
         this.check = check;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,9 +81,10 @@ public class ChatActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.actionbar);
         setContentView(R.layout.activity_chat);
         lastId=0;
+newData=false;
+        check=false;
         gainAcess=this;
         firstId=0;
-        startService(new Intent(ChatActivity.this, MyService.class));
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
@@ -139,6 +133,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
        resetListView("shake");
+        startService(new Intent(ChatActivity.this, MyIntentService.class));
     }
 
 
@@ -282,7 +277,7 @@ public class ChatActivity extends AppCompatActivity {
                     while ((inputStr = streamReader.readLine()) != null)
                         responseStrBuilder.append(inputStr);
                     JSONObject json = new JSONObject(responseStrBuilder.toString());
-                    return json.getString("have");
+                    return json.getString("haveUpdate");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -295,14 +290,20 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(final String isItNew) {
+        protected void onPostExecute(String isItNew) {
             if (isItNew != null) {
                 newData = true;
                 if (isItNew.equals("yes"))
                     check = true;
             } else {
+
                 Toast.makeText(ChatActivity.this, "lost connection to server", Toast.LENGTH_LONG).show();
             }
+        }
+
+        @Override
+        protected void onCancelled(){
+            checkAsyc=null;
         }
     }
     /**

@@ -4,7 +4,7 @@
     <string name="title_activity_login">הירשם</string>
 
     <!--String of Main activity-->
-
+<string name="shake">טוען</string>
     <string name="Shalom">שלום</string>
     <string name="Gooodbye">להתראות</string>
     <string name="Wise">בברכת ואיחולים</string>

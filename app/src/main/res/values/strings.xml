@@ -49,4 +49,5 @@
     <string name="contin">Continue</string>
     <!---ChatActivity string-->
     <string name="fail_update">fail to get new msg</string>
+    <string name="shake">loading</string>
 </resources>

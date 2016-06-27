@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
         protected User doInBackground(Void... params) {///run in diff thread
 
             try {
-                URL url = new URL("http://10.0.2.2:36182//MyFormServlet?username="+this.user_name+"&password="+this.password);
+                URL url = new URL("http://advprog.cs.biu.ac.il:8080/Ex4web/MyFormServlet?username="+this.user_name+"&password="+this.password);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 try {

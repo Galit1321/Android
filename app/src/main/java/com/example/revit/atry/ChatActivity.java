@@ -39,12 +39,16 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
    public static ChatActivity gainAcess;
-    private static boolean check;
-  //members that relate to the layout
+    private static boolean updateInfo;
+
+    public void setUpdateInfo(boolean updateInfo) {
+        ChatActivity.updateInfo = updateInfo;
+    }
+
+    //members that relate to the layout
     private ListView lstPosts;
     private ArrayList<Messages> posts;
     private SwipeRefreshLayout swipeLayout;
-    private SensorManager sensorManager;
     private EditText edt;
     //java class members for function in class
     private Calendar calander;
@@ -70,9 +74,6 @@ public class ChatActivity extends AppCompatActivity {
     private int firstId;//the id of the first massage the we have in listview
 
 
-    public void setCheck(boolean check) {
-        this.check = check;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         lastId=0;
 newData=false;
-        check=false;
+        updateInfo=false;
         gainAcess=this;
         firstId=0;
         calander = Calendar.getInstance();
@@ -122,7 +123,7 @@ newData=false;
                 item.setTimeStmp(time);
                 item.setMsn(edt.getText().toString());
                 SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                item.setUser(sharedPrefs.getString("name", ""));
+                item.setUser(sharedPrefs.getString("name", "hhh"));
                 poststAdapter.add(item);
                 //hide keyboard
                 InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -182,25 +183,17 @@ newData=false;
         checkAsyc.execute();
     }
 
+    /**
+     * with for new message and return if a new data exist
+     * @return
+     */
     public Boolean isNew() {
         while (!newData){
             //do in background didn't finish it's work
         }
-        return check;
+        return updateInfo;
     }
-    /*
-    public void notification(){
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MyService.BROADCAST_ACTION);
-        registerReceiver(receiver, intentFilter);
-        AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        //300000
-        Long timeToAlert = new GregorianCalendar().getTimeInMillis() + 300000;
-        Intent intent = new Intent(ChatActivity.this,NotificationReceiver.class);
-        intent.putExtra("sender", "one");
-        alarmMgr.set(AlarmManager.RTC_WAKEUP, timeToAlert, PendingIntent.getBroadcast(ChatActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
-    }
-*/
+
     /***
      * inner class incharge of sending this post to the server
      */
@@ -226,10 +219,13 @@ newData=false;
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:36182//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                URL url = new URL("http://advprog.cs.biu.ac.il:8080/Ex4web/RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
                         + "&user=" + this.p.getUser());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
                 try {
                     urlConnection.getInputStream();
                 } catch (IOException e) {
@@ -265,7 +261,7 @@ newData=false;
         @Override
         protected String doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:36182//ChecLastServlet?last=" + this.last);
+                URL url = new URL("http://advprog.cs.biu.ac.il:8080/Ex4web/ChecLastServlet?last=" + this.last);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 try {
@@ -294,7 +290,7 @@ newData=false;
             if (isItNew != null) {
                 newData = true;
                 if (isItNew.equals("yes"))
-                    check = true;
+                    updateInfo = true;
             } else {
 
                 Toast.makeText(ChatActivity.this, "lost connection to server", Toast.LENGTH_LONG).show();
@@ -320,7 +316,7 @@ newData=false;
         @Override
         protected MsnList doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:36182///SendMsnServlet?first=" + firstId + "&last=" + lastId
+                URL url = new URL("http://advprog.cs.biu.ac.il:8080/Ex4web/SendMsnServlet?first=" + firstId + "&last=" + lastId
                         + "&type=" + this.method);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
@@ -355,6 +351,10 @@ newData=false;
         protected void onPostExecute(final MsnList mLst) {
             if (mLst != null) {
                 List<Messages> lst = mLst.getList();
+                if (lst==null){
+                    return;
+                }
+                poststAdapter.clear();
                 for (int i = 0; i < lst.size(); i++) {
                     poststAdapter.add(lst.get(i));
                 }
@@ -390,7 +390,7 @@ newData=false;
                     if ((++mShakeCount >= SHAKE_COUNT) && (now - mLastShake > SHAKE_DURATION)) {
                         mLastShake = now;
                         mShakeCount = 0;
-                        Toast.makeText(ChatActivity.this,"shack need to change" , Toast.LENGTH_LONG).show();
+                        Toast.makeText(ChatActivity.this,R.string.shake , Toast.LENGTH_LONG).show();
                         resetListView("shake");
                     }
                     mLastForce = now;

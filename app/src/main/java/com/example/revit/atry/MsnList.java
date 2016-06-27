@@ -27,7 +27,9 @@ public class MsnList {
     public MsnList(JSONObject json) {
      list = new ArrayList<Messages>();
         try {
-            for (int i=0; i < 10; i++) {
+            //int firstId = json.getInt("first");
+            int lastId = json.getInt("size");
+            for (int i = 0; i < lastId; i++) {
                 String obj = json.getString(Integer.toString(i));
                 if (obj!=null){//we have an i post in the json object
                 Messages m =  desrlizeMg( obj);

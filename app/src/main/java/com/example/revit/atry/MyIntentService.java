@@ -39,13 +39,13 @@ public class MyIntentService extends IntentService {
     private static final String EXTRA_PARAM2 = "com.example.revit.atry.extra.PARAM2";
     InnerCheckAsyc checkAsyc;
 //    private NewMsgTask lAuthTask;
-    private  Boolean check;
+    private  Boolean updateInfo;
     private  Boolean newData;
     private NotificationManager nfc;
 
     public MyIntentService() {
         super("MyIntentService");
-check=false;
+        updateInfo=false;
         newData=false;
 
     }
@@ -84,7 +84,7 @@ check=false;
         while (!newData){
             //do in background didn't finish it's work
         }
-        return check;
+        return updateInfo;
     }
 
     @Override
@@ -92,7 +92,7 @@ check=false;
 
        while (true){
            try {
-               Thread.sleep(30000);
+               Thread.sleep(5*60000);
            } catch (InterruptedException e) {
                e.printStackTrace();
            }
@@ -129,7 +129,7 @@ check=false;
         if (chatActivity!=null){
             chatActivity.resetListView("shake");
             resultIntent = new Intent(chatActivity, ChatActivity.class);
-            chatActivity.setCheck(false);
+            chatActivity.setUpdateInfo(false);
 
         }else{
             resultIntent = new Intent(MyIntentService.this, ChatActivity.class);
@@ -185,7 +185,7 @@ check=false;
         @Override
         protected String doInBackground(Void... params) {
             try{
-            URL url = new URL("http://10.0.2.2:8080//ChecLastServlet?last="+this.last);
+            URL url = new URL("http://10.0.2.2:8080/Ex4web/ChecLastServlet?last="+this.last);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
             try {
@@ -214,7 +214,7 @@ check=false;
         if (isItNew!=null){
             newData = true;
             if (isItNew.equals("yes"))
-            check = true;
+            updateInfo = true;
         } else
         {
             Toast.makeText(MyIntentService.this, "lost con to server in service", Toast.LENGTH_LONG).show();

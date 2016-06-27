@@ -39,20 +39,15 @@ public class MyIntentService extends IntentService {
     private static final String EXTRA_PARAM2 = "com.example.revit.atry.extra.PARAM2";
     InnerCheckAsyc checkAsyc;
 //    private NewMsgTask lAuthTask;
-    Calendar cur_cal ;
-    private  Boolean check = false;
-    private  Boolean newData = false;
+    private  Boolean check;
+    private  Boolean newData;
     private NotificationManager nfc;
 
     public MyIntentService() {
         super("MyIntentService");
-        cur_cal =Calendar.getInstance();
-        Intent intent = new Intent(this, MyService.class);
-        nfc = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
-        AlarmManager alarm = (android.app.AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        cur_cal.setTimeInMillis(System.currentTimeMillis());
-        alarm.setRepeating(android.app.AlarmManager.RTC_WAKEUP, cur_cal.getTimeInMillis(), 60 * 5000, pintent);
+check=false;
+        newData=false;
+
     }
 
     /**
@@ -95,6 +90,12 @@ public class MyIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
        while (true){
+
+           try {
+               Thread.sleep(500);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
            boolean aged;
            ChatActivity c_act=ChatActivity.gainAcess;
            if (c_act==null){//meaning the activity is not active
@@ -107,7 +108,6 @@ public class MyIntentService extends IntentService {
            if(aged){
                showNotification(c_act);
              }
-           stopSelf();
         }
     }
 
@@ -146,6 +146,7 @@ public class MyIntentService extends IntentService {
                         .setContentText("you have new messages");
         notification.setContentIntent( contentIntent);
         // Send the notification. 8191 is the id to this notifiction
+        nfc = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
         notification.setAutoCancel(true);//dimiss the notification when is press
         nfc.notify(8191,notification.build());
@@ -214,7 +215,7 @@ public class MyIntentService extends IntentService {
             check = true;
         } else
         {
-            Toast.makeText(MyIntentService.this, "lost connection to server", Toast.LENGTH_LONG).show();
+            Toast.makeText(MyIntentService.this, "lost con to server in service", Toast.LENGTH_LONG).show();
         }
     }
 

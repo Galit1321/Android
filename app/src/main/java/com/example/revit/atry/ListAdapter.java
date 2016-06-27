@@ -29,7 +29,12 @@ public class ListAdapter extends ArrayAdapter<Messages>{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Messages item = getItem(position);
-            convertView=LayoutInflater.from(getContext()).inflate(R.layout.left,parent,false);
+        if (Locale.getDefault().getLanguage().equals("en")) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.right, parent, false);
+        }
+        else {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.right, parent, false);
+        }
         TextView post = (TextView) convertView.findViewById(R.id.msgr);
         TextView timestamp = (TextView) convertView
                 .findViewById(R.id.time);

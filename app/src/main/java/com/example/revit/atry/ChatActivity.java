@@ -1,8 +1,6 @@
 package com.example.revit.atry;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,15 +12,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,7 +35,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity implements SensorEventListener {
@@ -58,7 +51,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     private SimpleDateFormat simpleDateFormat;
     private InnSendMsn mAuthTask;//inner class
     private ListAdapter poststAdapter;
-    private boolean newData;
+    private  boolean newData;
     private InnerCheckAsyc checkAsyc;
     private GetMsgAsyc listAsyc;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -95,9 +88,10 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         getSupportActionBar().setCustomView(R.layout.actionbar);
         setContentView(R.layout.activity_chat);
         lastId=0;
+newData=false;
+        check=false;
         gainAcess=this;
         firstId=0;
-        startService(new Intent(ChatActivity.this, MyService.class));
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
@@ -137,11 +131,12 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 edt.setText("");
-               // mAuthTask = new InnSendMsn(item);//activate asyc commend of
-               // mAuthTask.execute();
+                mAuthTask = new InnSendMsn(item);//activate asyc commend of
+                mAuthTask.execute();
             }
         });
        resetListView("shake");
+        startService(new Intent(ChatActivity.this, MyIntentService.class));
     }
 
 
@@ -243,7 +238,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:36182//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
                         + "&user=" + this.p.getUser());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
@@ -282,7 +277,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected String doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:36182//ChecLastServlet?last=" + this.last);
+                URL url = new URL("http://10.0.2.2:8080//ChecLastServlet?last=" + this.last);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 try {
@@ -294,7 +289,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                     while ((inputStr = streamReader.readLine()) != null)
                         responseStrBuilder.append(inputStr);
                     JSONObject json = new JSONObject(responseStrBuilder.toString());
-                    return json.getString("have");
+                    return json.getString("haveUpdate");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -307,14 +302,20 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         }
 
         @Override
-        protected void onPostExecute(final String isItNew) {
+        protected void onPostExecute(String isItNew) {
             if (isItNew != null) {
                 newData = true;
                 if (isItNew.equals("yes"))
                     check = true;
             } else {
+
                 Toast.makeText(ChatActivity.this, "lost connection to server", Toast.LENGTH_LONG).show();
             }
+        }
+
+        @Override
+        protected void onCancelled(){
+            checkAsyc=null;
         }
     }
     /**

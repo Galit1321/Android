@@ -89,10 +89,10 @@ check=false;
 
     @Override
     protected void onHandleIntent(Intent intent) {
-       while (true){
 
+       while (true){
            try {
-               Thread.sleep(500);
+               Thread.sleep(30000);
            } catch (InterruptedException e) {
                e.printStackTrace();
            }
@@ -103,6 +103,7 @@ check=false;
                aged=isNew();
            }else{
                c_act.checkForLastMsg();
+
                aged=c_act.isNew();
            }
            if(aged){
@@ -126,6 +127,7 @@ check=false;
     private void showNotification(ChatActivity chatActivity) {
         Intent resultIntent;
         if (chatActivity!=null){
+            chatActivity.resetListView("shake");
             resultIntent = new Intent(chatActivity, ChatActivity.class);
             chatActivity.setCheck(false);
 
@@ -183,7 +185,7 @@ check=false;
         @Override
         protected String doInBackground(Void... params) {
             try{
-            URL url = new URL("http://10.0.2.2:36182//ChecLastServlet?last="+this.last);
+            URL url = new URL("http://10.0.2.2:8080//ChecLastServlet?last="+this.last);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
             try {
@@ -195,7 +197,7 @@ check=false;
                 while ((inputStr = streamReader.readLine()) != null)
                     responseStrBuilder.append(inputStr);
                 JSONObject json = new JSONObject(responseStrBuilder.toString());
-                return  json.getString("have");
+                return  json.getString("haveUpdate");
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {

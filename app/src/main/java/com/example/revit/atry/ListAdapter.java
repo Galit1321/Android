@@ -36,10 +36,6 @@ public class ListAdapter extends ArrayAdapter<Messages>{
         TextView user = (TextView) convertView
                 .findViewById(R.id.userText);
 
-        //can't get to shared Pref because not activity.
-      //  SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        //item.setUser(sharedPrefs.getString("user", ""));
-        //poststAdapter.add(item);
        user.setText(item.getUser());
         post.setText(item.getMsn());
         timestamp.setText(item.getTimeStmp());

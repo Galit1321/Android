@@ -24,27 +24,36 @@
         <TextView
             android:id="@+id/Shalom_textview"
             android:text="@string/Shalom"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent" />
         <TextView
             android:id="@+id/Have_textview"
             android:text="@string/day"
             style="@style/TextAppearance.AppCompat.Headline"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent" />
         <TextView
             android:id="@+id/Enjoy_textview"
             android:text="@string/Enjoy"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent" />
         <TextView
             android:id="@+id/Wish_textview"
             android:text="@string/Wise"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent" />
         <TextView
             android:id="@+id/Goodbye_textview"
             android:text="@string/Gooodbye"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent" />
     </ViewFlipper>

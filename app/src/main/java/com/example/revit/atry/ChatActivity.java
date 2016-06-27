@@ -97,7 +97,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         lastId=0;
         gainAcess=this;
         firstId=0;
-        startService(new Intent(ChatActivity.this, MyService.class));
+        //startService(new Intent(ChatActivity.this, MyService.class));
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
@@ -111,11 +111,18 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
             }
         });
         lstPosts.setAdapter(poststAdapter);
+        //resetListView("shake");
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Button send = (Button) findViewById(R.id.send_button);
         edt = (EditText) findViewById(R.id.editText);
+        //Swipe
         swipeLayout=(SwipeRefreshLayout)findViewById(R.id.feed_swipeLayout);
-
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                resetListView("swipe");
+            }
+        });
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,16 +132,19 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 item.setTimeStmp(time);
                 item.setMsn(edt.getText().toString());
                 SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                item.setUser(sharedPrefs.getString("user", ""));
+                item.setUser(sharedPrefs.getString("name", ""));
                 poststAdapter.add(item);
                 //hide keyboard
                 InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 edt.setText("");
-                mAuthTask = new InnSendMsn(item);//activate asyc commend of
-                mAuthTask.execute();
+               // mAuthTask = new InnSendMsn(item);//activate asyc commend of
+               // mAuthTask.execute();
             }
         });
+
+
+
     }
 
 

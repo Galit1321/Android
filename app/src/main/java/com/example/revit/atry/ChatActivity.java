@@ -44,14 +44,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class ChatActivity extends AppCompatActivity implements SensorEventListener {
+public class ChatActivity extends AppCompatActivity {
    public static ChatActivity gainAcess;
     private static boolean check;
   //members that relate to the layout
     private ListView lstPosts;
     private ArrayList<Messages> posts;
     private SwipeRefreshLayout swipeLayout;
-    private SensorManager sensorManager;
     private EditText edt;
     //java class members for function in class
     private Calendar calander;
@@ -61,6 +60,10 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     private boolean newData;
     private InnerCheckAsyc checkAsyc;
     private GetMsgAsyc listAsyc;
+    private SensorManager sensorManager;
+    private SensorManager sensorMgr;
+    private ShakeListener listener;
+    private Sensor accelerometer;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -72,21 +75,11 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
     private int lastId;//the id of the last message that listview contain
     private int firstId;//the id of the first massage the we have in listview
 
-    public boolean isNewData() {
-        return newData;
-    }
-
-    public void setNewData(boolean newData) {
-        this.newData = newData;
-    }
-
-    public boolean isCheck() {
-        return check;
-    }
 
     public void setCheck(boolean check) {
         this.check = check;
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +96,10 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
         posts = new ArrayList<Messages>();
         poststAdapter = new ListAdapter(this, posts);
+        sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorMgr.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER);
+        listener = new ShakeListener();
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         poststAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
@@ -137,8 +134,8 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 edt.setText("");
-               // mAuthTask = new InnSendMsn(item);//activate asyc commend of
-               // mAuthTask.execute();
+                mAuthTask = new InnSendMsn(item);//activate asyc commend of
+               mAuthTask.execute();
             }
         });
        resetListView("shake");
@@ -162,31 +159,25 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         super.onResume();
         // register this class as a listener for the orientation and
         // accelerometer sensors
-        sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_NORMAL);
-
-        //for the 5 min update
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(MyService.BROADCAST_ACTION);
-        registerReceiver(receiver, filter);
+        sensorMgr.registerListener(listener,accelerometer,SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
     protected void onPause() {
         // unregister listener
         super.onPause();
-        sensorManager.unregisterListener(this);
-        unregisterReceiver(receiver);
+        //Save the new info.
+        //We create SharedPreferences for the new info
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor edi = pref.edit();
+        edi.putInt("last", lastId);
+        //We save the changes in SharedPreferences
+        edi.commit();
+
+        sensorManager.unregisterListener(listener);
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            // getAccelerometer(event);
-        }
 
-    }
     /***
      * check if the num pf last massage in
      * the data base
@@ -195,10 +186,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         checkAsyc= new InnerCheckAsyc(lastId);
         checkAsyc.execute();
     }
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
 
-    }
     public Boolean isNew() {
         while (!newData){
             //do in background didn't finish it's work
@@ -331,7 +319,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected MsnList doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:8080///SendMsnServlet?first=" + firstId + "&last=" + lastId
+                URL url = new URL("http://10.0.2.2:36182///SendMsnServlet?first=" + firstId + "&last=" + lastId
                         + "&type=" + this.method);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
@@ -382,6 +370,40 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
             listAsyc = null;
         }
     }
+    class ShakeListener implements SensorEventListener{
+        private static final int FORCE_THRESHOLD = 1500, TIME_THRESHOLD = 100, SHAKE_TIMEOUT = 500;
+        private static final int SHAKE_DURATION = 1000, SHAKE_COUNT = 3;
+        private float mLastX=-1.0f, mLastY=-1.0f, mLastZ=-1.0f;
+        private int mShakeCount = 0;
+        private long mLastShake,mLastForce,mLastTime;
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            long now = System.currentTimeMillis();
+            if ((now - mLastForce) > SHAKE_TIMEOUT) {mShakeCount = 0;}
+            float[] values = event.values;
+            if ((now - mLastTime) > TIME_THRESHOLD) {
+                long diff = now - mLastTime;
+                float speed = Math.abs(values[SensorManager.DATA_X] + values[SensorManager.DATA_Y] + values[SensorManager.DATA_Z] - mLastX - mLastY - mLastZ) / diff * 10000;
+                if (speed > FORCE_THRESHOLD) {
+                    if ((++mShakeCount >= SHAKE_COUNT) && (now - mLastShake > SHAKE_DURATION)) {
+                        mLastShake = now;
+                        mShakeCount = 0;
+                        Toast.makeText(ChatActivity.this,"shack need to change" , Toast.LENGTH_LONG).show();
+                        resetListView("shake");
+                    }
+                    mLastForce = now;
+                }
+                mLastTime = now;
+                mLastX = values[SensorManager.DATA_X];
+                mLastY = values[SensorManager.DATA_Y];
+                mLastZ = values[SensorManager.DATA_Z];
+            }
+        }
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    }
+
 }
 
 

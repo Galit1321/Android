@@ -97,7 +97,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         lastId=0;
         gainAcess=this;
         firstId=0;
-        //startService(new Intent(ChatActivity.this, MyService.class));
+        startService(new Intent(ChatActivity.this, MyService.class));
         calander = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         lstPosts = (ListView) findViewById(R.id.feed_lvPosts);
@@ -114,8 +114,14 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Button send = (Button) findViewById(R.id.send_button);
         edt = (EditText) findViewById(R.id.editText);
+        //Swipe
         swipeLayout=(SwipeRefreshLayout)findViewById(R.id.feed_swipeLayout);
-
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                resetListView("swipe");
+            }
+        });
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,14 +131,14 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 item.setTimeStmp(time);
                 item.setMsn(edt.getText().toString());
                 SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                item.setUser(sharedPrefs.getString("user", ""));
+                item.setUser(sharedPrefs.getString("name", ""));
                 poststAdapter.add(item);
                 //hide keyboard
                 InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 edt.setText("");
-                mAuthTask = new InnSendMsn(item);//activate asyc commend of
-                mAuthTask.execute();
+               // mAuthTask = new InnSendMsn(item);//activate asyc commend of
+               // mAuthTask.execute();
             }
         });
        resetListView("shake");
@@ -237,7 +243,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:8080//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
+                URL url = new URL("http://10.0.2.2:36182//RecMsnServlet?msn=" + this.p.getMsn() + "&timeStmp=" + this.p.getTimeStmp()
                         + "&user=" + this.p.getUser());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
@@ -276,7 +282,7 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
         @Override
         protected String doInBackground(Void... params) {
             try {
-                URL url = new URL("http://10.0.2.2:8080//ChecLastServlet?last=" + this.last);
+                URL url = new URL("http://10.0.2.2:36182//ChecLastServlet?last=" + this.last);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 try {
@@ -362,6 +368,9 @@ public class ChatActivity extends AppCompatActivity implements SensorEventListen
                 List<Messages> lst = mLst.getList();
                 for (int i = 0; i < lst.size(); i++) {
                     poststAdapter.add(lst.get(i));
+                }
+                if (method.equals("swipe")) {
+                    swipeLayout.setRefreshing(false);
                 }
             } else {
                 //dont need to go here

@@ -26,19 +26,19 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor ed = sharedPrefs.edit();
                 //If user exist go to chat.
-                if(sharedPrefs.contains("user")){
+              //  if(sharedPrefs.contains("user")){
                     Intent i=new Intent(MainActivity.this,ChatActivity.class);//move to the explition window
                     startActivity(i);
                     //If user connect
-                } else if (sharedPrefs.contains("connect")) {
-                    Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
-                    startActivity(i);
+                //} else if (sharedPrefs.contains("connect")) {
+                  //  Intent i=new Intent(MainActivity.this,LoginActivity.class);//move to the explition window
+                    //startActivity(i);
                     //First time.
-                } else {
-                    ed.putBoolean("connect", true);
-                    Intent i=new Intent(MainActivity.this,ExpActivity.class);//move to the explition window
-                    startActivity(i);
-                }
+                //} else {
+                  //  ed.putBoolean("connect", true);
+                    //Intent i=new Intent(MainActivity.this,ExpActivity.class);//move to the explition window
+                    //startActivity(i);
+                //}
             }
         };
         h.sendEmptyMessageDelayed(0, 4000); // wait  seconds and move to next page
